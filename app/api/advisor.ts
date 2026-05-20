@@ -308,6 +308,210 @@ export function analyzeCareerPathways(student: Student): CareerAnalysis {
   };
 }
 
+// --- 4-Year Plan Generation ---
+
+export interface SemesterPlan {
+  label: string;
+  term: "Fall" | "Spring";
+  year: number;
+  status: "completed" | "current" | "future";
+  courses: { course: Course; reasoning: string }[];
+  totalCredits: number;
+}
+
+export interface FourYearPlan {
+  studentId: string;
+  semesters: SemesterPlan[];
+  totalPlannedCredits: number;
+  projectedGraduation: string;
+  onTrack: boolean;
+}
+
+export function generateFourYearPlan(student: Student): FourYearPlan {
+  const degree = degreeRequirements.find((d) => d.major === student.major);
+  const progress = calculateGraduationProgress(student);
+
+  // Required courses still needed (those whose skills the student lacks)
+  const studentSkillsLower = student.skills.map((s) => s.toLowerCase());
+  const remainingRequired: Course[] = [];
+  if (degree) {
+    for (const courseId of degree.requiredCourses) {
+      const course = courses.find((c) => c.id === courseId);
+      if (!course) continue;
+      const skillsFromCourse = course.skillsTaught.map((s) => s.toLowerCase());
+      const alreadyHasSkills = skillsFromCourse.filter((s) => studentSkillsLower.includes(s));
+      const coverage = alreadyHasSkills.length / skillsFromCourse.length;
+      if (coverage < 0.8) remainingRequired.push(course);
+    }
+  }
+
+  // Elective recommendations to round out career goals
+  const electiveRecs = degree ? getElectiveRecommendations(student, degree).map((r) => r.course) : [];
+  const seenIds = new Set(remainingRequired.map((c) => c.id));
+  const electives = electiveRecs.filter((c) => !seenIds.has(c.id));
+
+  // Build the queue, prioritizing required then electives
+  const courseQueue: Course[] = [...remainingRequired, ...electives];
+
+  // Past semesters (completed). 4 years = 8 semesters total.
+  const enrollment = student.enrollmentYear;
+  const currentYear = 2026;
+  const currentTermIsSpring = true;
+  const totalSemestersUsed = (currentYear - enrollment) * 2 + (currentTermIsSpring ? 1 : 2);
+
+  const semesters: SemesterPlan[] = [];
+  let year = enrollment;
+  let isFall = true; // start each academic year in Fall
+  const totalSems = 8;
+
+  const creditsPerSemester = 15;
+  let queueIdx = 0;
+
+  for (let i = 0; i < totalSems; i++) {
+    const term: "Fall" | "Spring" = isFall ? "Fall" : "Spring";
+    const semYear = isFall ? year : year + 1;
+    const label = `${term} ${semYear}`;
+    let status: "completed" | "current" | "future" = "future";
+    if (i < totalSemestersUsed - 1) status = "completed";
+    else if (i === totalSemestersUsed - 1) status = "current";
+
+    const sem: SemesterPlan = {
+      label,
+      term,
+      year: semYear,
+      status,
+      courses: [],
+      totalCredits: 0,
+    };
+
+    // Only populate current and future semesters with plan items
+    if (status !== "completed") {
+      while (sem.totalCredits < creditsPerSemester && queueIdx < courseQueue.length) {
+        const next = courseQueue[queueIdx];
+        if (sem.totalCredits + next.credits > creditsPerSemester + 1) break;
+        sem.courses.push({
+          course: next,
+          reasoning:
+            remainingRequired.includes(next)
+              ? `Required for ${student.major}`
+              : `Elective aligned with ${student.careerGoals[0] || "career goals"}`,
+        });
+        sem.totalCredits += next.credits;
+        queueIdx++;
+      }
+    }
+
+    semesters.push(sem);
+
+    // Advance term
+    if (isFall) {
+      isFall = false;
+    } else {
+      isFall = true;
+      year++;
+    }
+  }
+
+  const totalPlannedCredits = semesters.reduce((sum, s) => sum + s.totalCredits, 0);
+
+  return {
+    studentId: student.id,
+    semesters,
+    totalPlannedCredits,
+    projectedGraduation: progress.estimatedGraduation,
+    onTrack: progress.onTrack,
+  };
+}
+
+// --- Conversational Advisor (no LLM — pattern routing) ---
+
+export interface ChatResponse {
+  answer: string;
+  suggestions: string[];
+  followUpPrompts: string[];
+  context?: {
+    type: "courses" | "career" | "progress" | "skills" | "general";
+    data?: unknown;
+  };
+}
+
+export function answerStudentQuestion(student: Student, question: string): ChatResponse {
+  const q = question.toLowerCase().trim();
+  const firstName = student.name.split(" ")[0];
+
+  // Course recommendations
+  if (q.match(/what.*(take|register|enroll|sign up|class|course).*(next|semester|spring|fall)/) || q.match(/recommend.*(course|class)/) || q.match(/which.*course/)) {
+    const recs = recommendCourses(student);
+    const top = recs.slice(0, 3);
+    const list = top.map((r, i) => `${i + 1}. **${r.course.code} — ${r.course.name}** (${r.course.credits} cr): ${r.reasoning}`).join("\n");
+    return {
+      answer: `Hey ${firstName}, based on your ${student.major} degree progress and your goal of ${student.careerGoals[0] || "your career"}, here are the three courses I'd register for next:\n\n${list}\n\nWant me to draft a full 4-year plan?`,
+      suggestions: ["Show me my 4-year plan", "Why these courses?", "Show electives instead"],
+      followUpPrompts: ["What courses fill my biggest skill gap?", "When can I take CS 4470?"],
+      context: { type: "courses", data: top },
+    };
+  }
+
+  // Career questions
+  if (q.match(/(career|job|salary|industry|hired|after graduation|what can i do)/)) {
+    const analysis = analyzeCareerPathways(student);
+    const top = analysis.matchedPaths[0];
+    if (top) {
+      const matchedSkills = top.matchedSkills.slice(0, 4).join(", ");
+      const missing = top.missingSkills.slice(0, 3).join(", ");
+      return {
+        answer: `Your strongest career match right now is **${top.career.title}** at ${top.matchScore}% (avg salary $${top.career.averageSalary.toLocaleString()}, growth ${top.career.growthRate}%/yr).\n\nYou already have: ${matchedSkills}.\n${top.missingSkills.length > 0 ? `Skills to develop: ${missing}.` : "You're well-prepared!"}\n\nWant me to find courses that close those gaps?`,
+        suggestions: ["Close the skill gaps", "Show all career matches", "What if I pivot to ML?"],
+        followUpPrompts: ["Compare top 3 careers side by side", "Internships near UVU"],
+        context: { type: "career", data: analysis.matchedPaths.slice(0, 3) },
+      };
+    }
+  }
+
+  // Graduation / progress
+  if (q.match(/(graduat|on track|finish|when.*done|timeline|behind|catch up)/)) {
+    const progress = calculateGraduationProgress(student);
+    return {
+      answer: `You're at **${progress.percentComplete}%** of your degree (${progress.creditsCompleted}/${progress.requiredCredits} credits). At 15 credits/semester you'll graduate ${progress.estimatedGraduation} — ${progress.onTrack ? `that's on track with your target of ${student.expectedGraduation}.` : `that's later than your ${student.expectedGraduation} target. Want to look at summer courses to catch up?`}`,
+      suggestions: progress.onTrack ? ["Show 4-year plan", "Can I graduate earlier?"] : ["Find summer courses", "Increase course load", "Show 4-year plan"],
+      followUpPrompts: ["What if I overload to 18 credits?", "How does this compare to my cohort?"],
+      context: { type: "progress", data: progress },
+    };
+  }
+
+  // Skills
+  if (q.match(/(skill|learn|gap|missing|what.*know)/)) {
+    const analysis = analyzeCareerPathways(student);
+    const gaps = analysis.skillGapAnalysis.gaps.slice(0, 5);
+    return {
+      answer: gaps.length === 0
+        ? `Looking great, ${firstName} — no significant skill gaps across your target careers. Strong position.`
+        : `Your top skill gaps for your career goals: **${gaps.join(", ")}**. I can recommend specific UVU courses that teach each of these.`,
+      suggestions: ["Courses to close gaps", "Show all my skills", "Add a skill to my profile"],
+      followUpPrompts: ["What's the highest-ROI skill to learn next?", "Which internships need these skills?"],
+      context: { type: "skills", data: gaps },
+    };
+  }
+
+  // GPA
+  if (q.match(/(gpa|grade|standing|academic|honor)/)) {
+    return {
+      answer: `Your current GPA is **${student.gpa}**. ${student.gpa >= 3.5 ? `Excellent — you qualify for UVU Honors consideration and most competitive grad programs.` : student.gpa >= 3.0 ? `Solid academic standing. Maintain this while building practical experience.` : `Below 3.0 — let's look at lighter course loads, tutoring at UVU's Student Success Center, or retaking key courses.`}`,
+      suggestions: ["How do I raise my GPA?", "Honors program requirements", "Show grade trend"],
+      followUpPrompts: ["What if I retake a course?", "Which classes are 'GPA boosters'?"],
+      context: { type: "progress" },
+    };
+  }
+
+  // Default
+  return {
+    answer: `I'm your Velocity AI advisor, ${firstName}. I can help with course planning, career pathways, skill gaps, graduation timing, and GPA strategy. What's on your mind?`,
+    suggestions: ["What should I take next semester?", "Show my career matches", "Am I on track to graduate?", "What skills should I focus on?"],
+    followUpPrompts: ["Help me build a 4-year plan", "Compare my top careers"],
+    context: { type: "general" },
+  };
+}
+
 // --- Full Advisor Recommendation ---
 
 export function getAdvisorRecommendation(student: Student): AdvisorRecommendation {

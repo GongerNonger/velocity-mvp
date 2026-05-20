@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Velocity x UVU - AI Academic & Career Advising",
+  title: "Velocity  AI Academic Advisor for higher ed",
   description:
-    "AI-powered academic advising for Utah Valley University. Personalized degree guidance, course recommendations, and career pathway analysis for UVU Wolverines.",
+    "Velocity is the AI advising platform for universities. Personalized degree plans, conversational AI advising, risk detection, and career pathway matching. Founded by students at Utah Valley University.",
 };
 
 export default function RootLayout({

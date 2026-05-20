@@ -53,21 +53,26 @@ export default function AdminDashboard() {
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-bold text-white">Velocity</h1>
                 <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ backgroundColor: "#275D38", color: "white" }}>
-                  UVU Admin
+                  Admin
                 </span>
               </div>
-              <p className="text-xs text-gray-500">Institution Analytics &middot; Utah Valley University</p>
+              <p className="text-xs text-gray-500">Institution analytics &middot; Live demo data</p>
             </div>
           </div>
-          <a href="/demo" className="text-sm text-gray-400 hover:text-green-400 transition-colors">
-            Student View
-          </a>
+          <div className="flex items-center gap-5">
+            <a href="/admin/import" className="text-sm text-gray-400 hover:text-green-400 transition-colors">
+              Import CSV
+            </a>
+            <a href="/demo" className="text-sm text-gray-400 hover:text-green-400 transition-colors">
+              Student View
+            </a>
+          </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        <h2 className="text-2xl font-bold text-white mb-2">UVU Institutional Analytics</h2>
-        <p className="text-gray-500 text-sm mb-8">Real-time student success metrics for Utah Valley University</p>
+        <h2 className="text-2xl font-bold text-white mb-2">Institutional Analytics</h2>
+        <p className="text-gray-500 text-sm mb-8">Real-time student success metrics. This view runs against the loaded sample population.</p>
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -187,8 +192,7 @@ export default function AdminDashboard() {
       </main>
 
       <footer className="border-t border-gray-800 mt-16 py-8 text-center text-gray-500 text-sm">
-        <p>Velocity Admin Portal &middot; Utah Valley University</p>
-        <p className="mt-1 text-gray-600">Orem, Utah &middot; Go Wolverines</p>
+        <p>Velocity &middot; Advisor &amp; institution analytics</p>
       </footer>
     </div>
   );

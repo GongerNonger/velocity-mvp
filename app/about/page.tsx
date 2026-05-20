@@ -20,7 +20,7 @@ const PRINCIPLES = [
 ];
 
 const TIMELINE = [
-  { year: "2026 Q1", milestone: "Velocity founded. First pilot conversations with Utah Valley University and two regional Utah institutions." },
+  { year: "2026 Q1", milestone: "Velocity founded by a team of Utah Valley University students frustrated by how little advising they could get for tuition that wasn't cheap." },
   { year: "2026 Q2", milestone: "MVP shipped: student dashboard, advisor analytics, AI chat, 4-year plan, career pathway matching." },
   { year: "2026 Q3 (target)", milestone: "First paid pilot live. SOC 2 Type II audit kickoff. Lightcast partnership in motion." },
   { year: "2026 Q4 (target)", milestone: "First multi-college contract signed. Banner + Canvas integrations GA. State-system consortium pricing released." },
@@ -74,6 +74,12 @@ export default function AboutPage() {
             It builds a personalized 4-year plan for every student the day they enroll,
             surfaces risk before midterms, and matches every graduate to a career path the
             labor market is actually hiring for.
+          </p>
+          <p className="text-lg text-gray-400 mt-4 leading-relaxed">
+            We started Velocity as students at <span className="text-gray-200">Utah Valley University</span>  one of the largest
+            and fastest-growing public universities in the country  because we lived the problem firsthand.
+            Our demo runs on UVU&apos;s real course catalog and degree requirements; the product itself is built
+            for every campus.
           </p>
         </section>
 

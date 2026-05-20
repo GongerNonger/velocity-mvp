@@ -22,9 +22,9 @@ const PROBLEM_STATS = [
     body: "NACADA's national median caseload. Most institutions are well above it. The math doesn't work.",
   },
   {
-    stat: "41%",
-    label: "is UVU's 6-year completion rate",
-    body: "Up from 38% in 2018  but a long way from Vision 2030's 50% target. Every off-track student matters.",
+    stat: "63%",
+    label: "is the US 6-year completion rate",
+    body: "At non-flagship publics it's closer to 50%. Most institutions know which students are off-track  they just don't have the advising bandwidth to act on it.",
   },
   {
     stat: "$1.7T",
@@ -167,7 +167,7 @@ export default function Landing() {
             Every advisor gets superpowers.
           </h1>
           <p className="text-lg md:text-xl text-gray-400 mt-8 max-w-2xl mx-auto leading-relaxed">
-            Velocity is the AI advising platform that turns a 48,670-student university into 48,670 personalized degree plans.
+            Velocity is the AI advising platform that turns a 40,000-student university into 40,000 personalized degree plans.
             Catch at-risk students before they drop out. Match every graduate to a career they&apos;ll actually love.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -186,7 +186,7 @@ export default function Landing() {
             </button>
           </div>
           <p className="text-xs text-gray-600 mt-10">
-            Designed for Utah Valley University &middot; 48,670 students &middot; 7 colleges &middot; one Vision 2030 goal
+            Founded by UVU students &middot; Built for every campus
           </p>
         </div>
       </section>

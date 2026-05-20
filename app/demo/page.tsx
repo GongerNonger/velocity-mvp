@@ -111,7 +111,7 @@ export default function StudentDashboard() {
   if (loading && !selectedStudent) {
     return (
       <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-        <div className="text-green-400 text-xl">Loading Velocity x UVU...</div>
+        <div className="text-green-400 text-xl">Loading Velocity...</div>
       </div>
     );
   }
@@ -129,10 +129,10 @@ export default function StudentDashboard() {
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-bold text-white">Velocity</h1>
                 <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ backgroundColor: "#275D38", color: "white" }}>
-                  UVU
+                  Demo
                 </span>
               </div>
-              <p className="text-xs text-gray-500">AI Academic Advisor &middot; Utah Valley University</p>
+              <p className="text-xs text-gray-500">AI Academic Advisor &middot; Live with UVU sample data</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -446,10 +446,9 @@ export default function StudentDashboard() {
         )}
       </main>
 
-      {/* UVU Footer */}
       <footer className="border-t border-gray-800 mt-16 py-8 text-center text-gray-500 text-sm">
-        <p>Velocity AI Academic Advisor &middot; Built for Utah Valley University</p>
-        <p className="mt-1 text-gray-600">Orem, Utah &middot; Go Wolverines</p>
+        <p>Velocity &middot; AI Academic Advising</p>
+        <p className="mt-1 text-gray-600">Demo uses public UVU catalog data; sample students are fictional.</p>
       </footer>
 
       {selectedStudent && <AIChat studentId={selectedStudent.id} studentName={selectedStudent.name} />}

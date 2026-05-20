@@ -199,7 +199,7 @@ export default function PlanPage() {
       </main>
 
       <footer className="border-t border-gray-800 mt-16 py-8 text-center text-gray-500 text-sm">
-        <p>Velocity AI Academic Advisor &middot; Built for Utah Valley University</p>
+        <p>Velocity &middot; AI Academic Advising</p>
       </footer>
     </div>
   );

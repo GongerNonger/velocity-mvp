@@ -1,4 +1,4 @@
-// Velocity x UVU — Expanded Career Paths (BLS / O*NET sourced)
+// Velocity  Expanded Career Paths (BLS / O*NET sourced)
 // ----------------------------------------------------------------
 // IDs CAR-014 onward. Do NOT renumber — CAR-001..CAR-013 live in
 // app/api/store.ts and are referenced by the matching engine.

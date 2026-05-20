@@ -1,8 +1,9 @@
-// Velocity x UVU — In-Memory Data Store
-// Utah Valley University Academic Advisor Prototype
-// Baseline catalog defined inline; expanded UVU courses, degrees, and
-// BLS-sourced careers live under ./data and are merged into the exported
-// arrays at the bottom of this file.
+// Velocity  In-Memory Data Store
+//
+// Baseline catalog is defined inline. The demo uses UVU's real public
+// course catalog (Velocity was founded by UVU students) as a realistic
+// dataset; expanded courses, degrees, and BLS-sourced careers live under
+// ./data and are merged into the exported arrays at the bottom of this file.
 
 import { expandedCourses, expandedDegrees } from "./data/uvu-catalog";
 import { expandedCareerPaths } from "./data/career-paths";

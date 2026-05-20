@@ -1,6 +1,11 @@
 // Velocity x UVU — In-Memory Data Store
 // Utah Valley University Academic Advisor Prototype
-// All types and pre-seeded data using real UVU degree programs and courses
+// Baseline catalog defined inline; expanded UVU courses, degrees, and
+// BLS-sourced careers live under ./data and are merged into the exported
+// arrays at the bottom of this file.
+
+import { expandedCourses, expandedDegrees } from "./data/uvu-catalog";
+import { expandedCareerPaths } from "./data/career-paths";
 
 export interface Student {
   id: string;
@@ -46,6 +51,9 @@ export interface CareerPath {
   averageSalary: number;
   growthRate: number;
   relatedMajors: string[];
+  // Optional citation URL (BLS Occupational Outlook Handbook) for entries
+  // sourced from the live labor-market dataset in app/api/data/career-paths.ts.
+  bls_link?: string;
 }
 
 export interface AdvisorRecommendation {
@@ -336,7 +344,7 @@ export const students: Student[] = [
 
 // --- UVU Courses (based on real UVU catalog) ---
 
-export const courses: Course[] = [
+const baseCourses: Course[] = [
   // Computer Science
   {
     id: "CRS-001",
@@ -597,7 +605,7 @@ export const courses: Course[] = [
 
 // --- UVU Degree Requirements ---
 
-export const degreeRequirements: DegreeRequirement[] = [
+const baseDegreeRequirements: DegreeRequirement[] = [
   {
     id: "DEG-001",
     major: "Computer Science",
@@ -650,7 +658,7 @@ export const degreeRequirements: DegreeRequirement[] = [
 
 // --- Career Paths ---
 
-export const careerPaths: CareerPath[] = [
+const baseCareerPaths: CareerPath[] = [
   {
     id: "CAR-001",
     title: "Software Engineer",
@@ -756,6 +764,16 @@ export const careerPaths: CareerPath[] = [
     relatedMajors: ["Nursing"],
   },
 ];
+
+// --- Merged catalogs (baseline + expanded UVU/BLS data) ---
+//
+// `courses`, `degreeRequirements`, and `careerPaths` are what the rest of the
+// app consumes. They concatenate the hand-curated baseline above with the
+// scraped UVU catalog data and BLS-sourced career data in ./data.
+
+export const courses: Course[] = [...baseCourses, ...expandedCourses];
+export const degreeRequirements: DegreeRequirement[] = [...baseDegreeRequirements, ...expandedDegrees];
+export const careerPaths: CareerPath[] = [...baseCareerPaths, ...expandedCareerPaths];
 
 export const pricingTiers = [
   { name: "Small", label: "< 5,000 Students", platformFee: 50000, perStudent: 30, description: "Community colleges & small institutions" },

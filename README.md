@@ -1,59 +1,70 @@
-# Velocity x UVU — AI Academic Advisor Demo
+# Velocity x UVU — AI Academic Advisor
 
-> AI-powered academic advising prototype built specifically for **Utah Valley University**. Personalized degree guidance, course recommendations, and career pathway analysis for UVU Wolverines.
+> AI-powered academic advising platform built for **Utah Valley University** (48,000+ students)
+> and designed to deploy across higher ed. Personalized degree plans, conversational AI advisor,
+> 4-year planning, career pathway matching, and advisor risk alerts.
 
-## Quick Start (Host from Your Browser)
+## Quick start
 
 ```bash
-cd businesses/night-21-velocity-uvu-demo
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) — that's it!
+Open [http://localhost:3000](http://localhost:3000) — that's it.
 
-## What You'll See
+## What you'll see
 
-### Student Dashboard (/)
-- **6 UVU students** across CS, IT, Business, Digital Marketing, and Cybersecurity
-- Degree progress with UVU-green (#275D38) branding
-- AI-powered course recommendations using real UVU course codes (CS 2420, IT 2300, MKTG 3400, etc.)
-- Career pathway matching with salary data and skill gap analysis
-- Risk alerts for GPA, graduation timeline, and credit pace
+### `/` — Marketing landing page
+Pitch + pricing for the platform. Sales-ready, links to the demo. No buyer signup required.
 
-### Admin Dashboard (/admin)
-- Institutional analytics for UVU
-- Program distribution across colleges
-- Workforce readiness indicators and common skill gaps
-- Graduation rate projections
+### `/demo` — Student dashboard
+- **15 sample UVU students** across CS, IT, Business, Digital Marketing, Cybersecurity, Nursing
+- Default opener is **Sarah Chen** — a GPA-2.1 at-risk student that triggers every risk alert at once
+- Degree progress, recommended courses, career matches, skill gaps
+- **Velocity AI chat** in the bottom-right — ask any student question ("what should I take next semester?", "am I on track to graduate?") and get a personalized response
 
-## UVU Data Included
+### `/demo/plan/[studentId]` — 4-Year Plan view
+Kanban-style 8-semester grid. Completed / current / future semesters. AI-generated course
+sequencing aligned with the student's career goals.
 
-- **5 Degree Programs:** Computer Science, Information Technology, Business Management, Digital Marketing, Cybersecurity
-- **25 Courses** with real UVU course codes across CS, IT, MGMT, MKTG, STAT, MATH departments
-- **6 Sample Students** at different stages across the College of Engineering & Technology and Woodbury School of Business
-- **11 Career Paths** with salary data and growth rates
-- **UVU Branding:** Green (#275D38), Wolverines, Orem Utah
+### `/admin` — Institutional analytics
+Real-time success metrics — average GPA, on-track graduation rate, program distribution,
+workforce-readiness skill gaps, popular career aspirations.
 
-## Revenue Model (B2B)
+## Sample data
 
-- **Target:** UVU and similar institutions
-- **Pricing:** $100K/year platform fee + $25/student (UVU has ~41,000 students)
-- **Potential deal size:** ~$1.1M/year for UVU alone
+- **6 UVU degree programs** including a Nursing path (College of Health & Public Service)
+- **25 courses** with real UVU codes (CS 2420, IT 2300, MKTG 3660, CS 4470, etc.)
+- **15 students** spanning at-risk, high-flyer, first-gen, returning adult, day-1 freshman
+- **13 career paths** with salary + BLS-style growth data (Software Engineer, ML Engineer,
+  Cybersecurity Analyst, RN, Nurse Practitioner, etc.)
 
-## Tech Stack
+## Tech stack
 
-- Next.js 14 (App Router)
-- TypeScript
-- Tailwind CSS
-- Dark theme with UVU green (#275D38) accents
-- No external APIs — all logic runs locally
+- Next.js 14 (App Router) + TypeScript
+- Tailwind CSS, dark theme, UVU green (#275D38) accent
+- Zero external APIs — advisor engine is all local algorithmic logic
+- In-memory store, ready to swap to Postgres / Banner export ingestion
 
-## Running Tests
+## Pricing
+
+| Tier | Students | Platform fee | Per student |
+|---|---|---:|---:|
+| Small | < 5,000 | $50K | $30 |
+| Mid | 5,000 – 20,000 | $100K | $25 |
+| Large | 20,000+ | $250K | $20 |
+
+UVU at 48,670 students (Fall 2025) sits in the Large tier — annual contract size ~$1.22M.
+
+## Running tests
 
 ```bash
 npm test
 ```
+
+97 tests cover the advisor engine: graduation progress, course recommendations, risk alerts,
+career analysis, institutional analytics, and UVU course-code sanity.
 
 ## Deployment
 
@@ -61,4 +72,31 @@ npm test
 npx vercel
 ```
 
-No environment variables needed.
+No environment variables required.
+
+## Repo layout
+
+```
+app/
+  page.tsx                          marketing landing
+  demo/page.tsx                     student dashboard with AI chat
+  demo/plan/[studentId]/page.tsx    4-year plan view
+  admin/page.tsx                    institutional analytics
+  components/AIChat.tsx             slide-out conversational AI panel
+  api/
+    advisor.ts                      core engine: recommend, risk, career, chat, plan
+    store.ts                        in-memory data: students, courses, degrees, careers
+    chat/route.ts                   POST /api/chat
+    students/[id]/plan/route.ts     GET 4-year plan
+    students/[id]/{advise,career}/  per-student advising + career
+    ...
+docs/
+  research/
+    market-and-buyer.md             UVU institutional research, decision-makers, procurement
+    competitive-landscape.md        9 competitors, comparison table, defensible wedge
+    pilot-proposal.md               30-day no-risk pilot scope + success metrics
+    outreach-templates.md           Cold email + LinkedIn DM + warm-intro templates
+    one-pager.md                    Leave-behind deal sheet
+  design/
+    design-spec.md                  Full IA, copy, visual spec
+```

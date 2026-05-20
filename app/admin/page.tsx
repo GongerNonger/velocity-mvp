@@ -59,7 +59,7 @@ export default function AdminDashboard() {
               <p className="text-xs text-gray-500">Institution Analytics &middot; Utah Valley University</p>
             </div>
           </div>
-          <a href="/" className="text-sm text-gray-400 hover:text-green-400 transition-colors">
+          <a href="/demo" className="text-sm text-gray-400 hover:text-green-400 transition-colors">
             Student View
           </a>
         </div>

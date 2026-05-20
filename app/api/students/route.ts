@@ -21,7 +21,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
-  const { name, email, major, minor, enrollmentYear, expectedGraduation, completedCredits, requiredCredits, gpa, skills, careerGoals } = body;
+  const { name, email, uvid, college, major, minor, enrollmentYear, expectedGraduation, completedCredits, requiredCredits, gpa, skills, careerGoals } = body;
 
   if (!name || !email || !major) {
     return NextResponse.json(
@@ -37,6 +37,8 @@ export async function POST(req: NextRequest) {
     id: existingIndex >= 0 ? students[existingIndex].id : `STU-${String(students.length + 1).padStart(3, "0")}`,
     name,
     email,
+    uvid: uvid || (existingIndex >= 0 ? students[existingIndex].uvid : `108${String(Math.floor(Math.random() * 90000) + 10000)}`),
+    college: college || (existingIndex >= 0 ? students[existingIndex].college : "Scott M. Smith College of Engineering & Technology"),
     major,
     minor: minor || null,
     enrollmentYear: enrollmentYear || 2024,

@@ -359,7 +359,7 @@ export function generateFourYearPlan(student: Student): FourYearPlan {
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentTermIsSpring = now.getMonth() < 6;
-  const totalSemestersUsed = (currentYear - enrollment) * 2 + (currentTermIsSpring ? 1 : 2);
+  const totalSemestersUsed = (currentYear - enrollment) * 2 + (currentTermIsSpring ? 0 : 1);
 
   const semesters: SemesterPlan[] = [];
   let year = enrollment;
@@ -442,7 +442,7 @@ export function answerStudentQuestion(student: Student, question: string): ChatR
   const firstName = student.name.split(" ")[0];
 
   // Normalise intent — strip filler words so pattern matching is more robust
-  const tokens = q.replace(/[^\w\s]/g, " ").split(/\s+/);
+  const tokens = q.replace(/[^\w\s]/g, " ").split(/\s+/).filter(Boolean);
   const has = (...words: string[]) => words.some((w) => tokens.includes(w) || q.includes(w));
 
   // Course recommendations

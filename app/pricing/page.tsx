@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { pricingTiers } from "../api/store";
+import { AmbientOrbs } from "../components/AmbientOrbs";
 import { ROICalculator } from "../components/ROICalculator";
 
 const TIER_FEATURES = [
@@ -72,11 +73,7 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-gray-950 relative">
       {/* Animated background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="animate-orb-1 absolute -top-48 -left-48 w-[500px] h-[500px] rounded-full bg-green-900/15 blur-3xl" />
-        <div className="animate-orb-2 absolute top-1/2 -right-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
-        <div className="animate-orb-3 absolute -bottom-48 left-1/4 w-[450px] h-[450px] rounded-full bg-gray-700/15 blur-3xl" />
-      </div>
+      <AmbientOrbs />
       <header className="border-b border-gray-800 bg-gray-950/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
@@ -118,7 +115,7 @@ export default function PricingPage() {
             return (
               <div
                 key={tier.name}
-                className={`rounded-2xl p-6 bg-gray-900/70 backdrop-blur-sm border transition-all duration-300 ${highlight ? "border-green-700 ring-1 ring-green-700/50 shadow-lg shadow-green-900/20" : "border-gray-700/50 hover:border-green-700/50 hover:shadow-lg hover:shadow-green-900/10"} relative ${highlight ? "md:scale-105" : ""}`}
+                className={`rounded-2xl p-6 bg-gray-900/70 backdrop-blur-sm border transition-all duration-300 ${highlight ? "border-green-700 ring-1 ring-green-700/50 shadow-lg shadow-green-900/20" : "border-gray-700/60 hover:border-green-700/50 hover:shadow-lg hover:shadow-green-900/10"} relative ${highlight ? "md:scale-105" : ""}`}
                 style={highlight ? { boxShadow: "0 0 0 1px rgba(39, 93, 56, 0.4), 0 12px 40px rgba(39, 93, 56, 0.15)" } : undefined}
               >
                 {highlight && (
@@ -199,7 +196,7 @@ export default function PricingPage() {
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">Pricing FAQ</h2>
           <div className="space-y-3">
             {PRICING_FAQ.map((entry, i) => (
-              <details key={i} className="group bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 hover:border-green-700/50 transition-all duration-300 rounded-xl">
+              <details key={i} className="group bg-gray-900/70 backdrop-blur-sm border border-gray-700/60 hover:border-green-700/50 transition-all duration-300 rounded-xl">
                 <summary className="cursor-pointer list-none p-5 flex items-start justify-between gap-4 hover:bg-gray-900/60 transition-colors">
                   <span className="text-white font-medium text-sm md:text-base">{entry.q}</span>
                   <span className="text-gray-500 group-open:rotate-45 transition-transform shrink-0 mt-0.5">&#x2b;</span>
@@ -211,7 +208,7 @@ export default function PricingPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 md:p-12 text-center">
+        <section className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/60 rounded-2xl p-8 md:p-12 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-white">Request a 30-day pilot.</h2>
           <p className="text-gray-400 mt-3 max-w-2xl mx-auto">
             One college. One CSV. 72 hours to live. We&apos;ll send a scoping doc tailored to your institution within 1 business day.

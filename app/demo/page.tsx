@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { AIChat } from "../components/AIChat";
+import { AmbientOrbs } from "../components/AmbientOrbs";
 
 interface Student {
   id: string;
@@ -164,12 +165,7 @@ export default function StudentDashboard() {
 
   return (
     <div className="relative min-h-screen bg-gray-950">
-      {/* Animated orb background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="animate-orb-1 absolute -top-48 -left-48 w-[500px] h-[500px] rounded-full bg-green-900/15 blur-3xl" />
-        <div className="animate-orb-2 absolute top-1/2 -right-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
-        <div className="animate-orb-3 absolute -bottom-48 left-1/3 w-[450px] h-[450px] rounded-full bg-gray-700/15 blur-3xl" />
-      </div>
+      <AmbientOrbs />
       {/* UVU-branded Header */}
       <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -221,7 +217,7 @@ export default function StudentDashboard() {
         {selectedStudent && recommendation && (
           <>
             {/* Student Info Bar */}
-            <div className="animate-fade-in-up bg-gray-900 border border-gray-700/60 rounded-xl p-6 mb-8 shadow-lg shadow-black/20">
+            <div className="animate-fade-in-up bg-gray-900/70 backdrop-blur-sm border border-gray-700/60 rounded-xl p-6 mb-8 shadow-lg shadow-black/20">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h2 className="text-2xl font-bold text-white">{selectedStudent.name}</h2>
@@ -277,12 +273,12 @@ export default function StudentDashboard() {
                 {recommendation.riskAlerts.map((alert, i) => (
                   <div
                     key={i}
-                    className={`border border-l-4 rounded-lg p-4 ${
+                    className={`border-l-4 rounded-lg p-4 ${
                       alert.severity === "high"
-                        ? "bg-red-950/30 border-red-800 border-l-red-500/60 text-red-300"
+                        ? "bg-red-950/30 border-l-red-500/60 text-red-300"
                         : alert.severity === "medium"
-                        ? "bg-amber-950/30 border-amber-800 border-l-amber-500/60 text-amber-300"
-                        : "bg-green-950/30 border-green-800 border-l-green-500/60 text-green-300"
+                        ? "bg-amber-950/30 border-l-amber-500/60 text-amber-300"
+                        : "bg-green-950/30 border-l-green-500/60 text-green-300"
                     }`}
                   >
                     <div className="flex items-center gap-2 mb-1">

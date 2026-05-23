@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { AmbientOrbs } from "../../../components/AmbientOrbs";
 
 interface Course {
   id: string;
@@ -69,19 +70,14 @@ export default function PlanPage() {
 
   const statusColor = (s: SemesterPlan["status"]) =>
     s === "completed"
-      ? "bg-gray-800/50 border-gray-800 opacity-60"
+      ? "bg-gray-800/50 border-gray-800"
       : s === "current"
       ? "border-green-700 ring-1 ring-green-600/50 shadow-md shadow-green-900/20"
       : "bg-gray-900 border-gray-800";
 
   return (
     <div className="relative min-h-screen bg-gray-950">
-      {/* Animated orb background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="animate-orb-1 absolute -top-48 -left-48 w-[500px] h-[500px] rounded-full bg-green-900/15 blur-3xl" />
-        <div className="animate-orb-2 absolute top-1/2 -right-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
-        <div className="animate-orb-3 absolute -bottom-48 left-1/3 w-[450px] h-[450px] rounded-full bg-gray-700/15 blur-3xl" />
-      </div>
+      <AmbientOrbs />
       <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -171,7 +167,7 @@ export default function PlanPage() {
 
               <div className="flex-1 space-y-2">
                 {sem.status === "completed" && sem.courses.length === 0 && (
-                  <p className="text-xs text-gray-600 italic mt-2">Credits earned (course history hidden)</p>
+                  <p className="text-xs text-gray-500 italic mt-2">Credits earned (course history hidden)</p>
                 )}
                 {sem.courses.map((c, j) => (
                   <div

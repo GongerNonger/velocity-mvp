@@ -25,3 +25,10 @@
 - No functional logic, routing, copy (except the single heading text normalisation per spec), or data touched.
 - No new dependencies; all changes are Tailwind utility classes.
 - `tsc --noEmit` exited cleanly (zero errors).
+
+## Round 2 — Overseer fixes
+- **Rec #1 (shared orbs):** Replaced the inline 3-orb background JSX in `app/admin/page.tsx`, `app/admin/students/page.tsx`, and `app/admin/import/page.tsx` with `<AmbientOrbs />`. Imported the shared component from `app/components/AmbientOrbs.tsx` on each page. All admin pages now mount the identical orb arrangement as the rest of the app.
+- **Rec #5 (gradient text on dense headings):** In `app/admin/students/page.tsx` the "Student Roster" `<h2>` changed from `bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent` to plain `text-white`. Gradient text now reserved for the marketing hero only.
+- **Rec #6 (shimmer overload):** In `app/admin/page.tsx` removed the `animate-shimmer` overlay div from the department breakdown progress bars. Bars now render as static solid fills; the surrounding `relative overflow-hidden` wrapper was kept for layout neutrality.
+- **Rec #10 (important-card cohesion):** In `app/admin/page.tsx` the four top Key Metric cards now use `shadow-md shadow-green-900/20` instead of `shadow-md shadow-black/20`, matching the green-tinted shadow language D1 uses on the highlighted pricing tier.
+- `npx tsc --noEmit` exited cleanly (zero errors) after the round-2 edits.

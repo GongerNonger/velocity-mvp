@@ -22,3 +22,12 @@
 
 ## Design Rationale
 Dark glass aesthetic (gray-950 base, blurred borders) gives premium SaaS feel. Orbs add depth without distraction. Accent borders on alerts improve scanability. Hover lifts and shimmer reward interaction without cluttering the interface.
+
+## Round 2 — Overseer fixes
+- **#1 Shared orbs:** Replaced inline 3-orb JSX blocks with `<AmbientOrbs />` in `app/demo/page.tsx` and `app/demo/plan/[studentId]/page.tsx`. Added imports from `../components/AmbientOrbs` and `../../../components/AmbientOrbs` respectively. AIChat / DemoRequestForm untouched (they're overlays, no background needed).
+- **#3 Risk alert emphasis:** In `app/demo/page.tsx`, dropped the full `border` plus per-severity `border-{color}-800` from the risk alert className builder. Kept `border-l-4` + per-severity left border + tinted bg + text color + badge pill. Removes one redundant emphasis cue while preserving severity scanability.
+- **#4 Completed-semester opacity:** In `app/demo/plan/[studentId]/page.tsx`, removed `opacity-60` from the `statusColor` helper's completed branch. Bumped the "Credits earned (course history hidden)" body line from `text-gray-600` to `text-gray-500` to preserve intentional muting via color (now WCAG-AA-safer on `bg-gray-800/50` than the prior blanket opacity stack).
+- **#6 Shimmer scope:** Audited `app/demo/page.tsx` — `animate-shimmer` only appears on the primary credits progress bar (Student Info Bar). Career-match progress bars and 4-year plan visualizations have no shimmer. No additional removal needed within student scope.
+- **#7 Card style consistency:** Changed Student Info Bar in `app/demo/page.tsx` from `bg-gray-900` to `bg-gray-900/70 backdrop-blur-sm` so orbs bleed through, matching D1 marketing cards across the marketing → demo handoff.
+
+**Verification:** `npx tsc --noEmit` passes. No copy, route, or logic changes.

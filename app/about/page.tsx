@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AmbientOrbs } from "../components/AmbientOrbs";
 
 const PRINCIPLES = [
   {
@@ -35,11 +36,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-950 relative">
       {/* Animated background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="animate-orb-1 absolute -top-48 -left-48 w-[500px] h-[500px] rounded-full bg-green-900/15 blur-3xl" />
-        <div className="animate-orb-2 absolute top-1/2 -right-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
-        <div className="animate-orb-3 absolute -bottom-48 left-1/4 w-[450px] h-[450px] rounded-full bg-gray-700/15 blur-3xl" />
-      </div>
+      <AmbientOrbs />
       <header className="border-b border-gray-800 bg-gray-950/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
@@ -93,7 +90,7 @@ export default function AboutPage() {
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">What we believe</h2>
           <div className="space-y-6">
             {PRINCIPLES.map((p) => (
-              <div key={p.title} className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 hover:border-green-700/50 hover:shadow-lg hover:shadow-green-900/10 transition-all duration-300 rounded-xl p-6">
+              <div key={p.title} className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/60 hover:border-green-700/50 hover:shadow-lg hover:shadow-green-900/10 transition-all duration-300 rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-white">{p.title}</h3>
                 <p className="text-sm text-gray-400 mt-2 leading-relaxed">{p.body}</p>
               </div>
@@ -115,7 +112,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 text-center">
+        <section className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/60 rounded-2xl p-8 text-center">
           <h2 className="text-2xl font-bold text-white">Want to be one of our first three customers?</h2>
           <p className="text-gray-400 mt-3 max-w-xl mx-auto">
             Founding pilot institutions get permanent pricing, direct access to the founders,

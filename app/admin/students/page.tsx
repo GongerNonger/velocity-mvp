@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { AmbientOrbs } from "../../components/AmbientOrbs";
 
 interface StudentRow {
   id: string;
@@ -69,12 +70,7 @@ export default function StudentsListPage() {
 
   return (
     <div className="relative min-h-screen bg-gray-950">
-      {/* Animated orb background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="animate-orb-1 absolute -top-48 -right-48 w-[500px] h-[500px] rounded-full bg-green-900/12 blur-3xl" />
-        <div className="animate-orb-2 absolute bottom-1/4 -left-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
-        <div className="animate-orb-3 absolute top-1/3 right-1/3 w-[300px] h-[300px] rounded-full bg-gray-700/12 blur-3xl" />
-      </div>
+      <AmbientOrbs />
       <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -111,7 +107,7 @@ export default function StudentsListPage() {
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
           <div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent mb-1">Student Roster</h2>
+            <h2 className="text-2xl font-bold text-white mb-1">Student Roster</h2>
             <p className="text-gray-500 text-sm">
               {students.length} students in the loaded sample. At-risk students are sorted to the top.
             </p>

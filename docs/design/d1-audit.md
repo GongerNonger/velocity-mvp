@@ -54,3 +54,24 @@ No copy, routing, or functional logic was changed.
 - **One-pager article surface**: Print fidelity is the primary deliverable of that page. Its `bg-gray-900 border-gray-800` is already overridden to white for print, and adding glass effects would complicate the print stylesheet.
 - **Footer styling**: Low visual priority; left consistent across all pages.
 - **Inline `style` color overrides** (`#275D38`, `#4CAF50`): These are the brand colors. Replacing them with Tailwind classes would require config changes — outside the "no new npm packages, Tailwind only" constraint.
+
+---
+
+## Round 2 — Overseer fixes
+
+Applied recommendations #1 (shared orb component) and #2 (border opacity standardization) from `overseer-recommendations.md`. Recommendation #10 (pricing highlighted-tier treatment) reviewed — no change needed; pricing already uses the canonical `ring-1 ring-green-700/50 shadow-lg shadow-green-900/20` pattern.
+
+### app/page.tsx (Landing)
+- Replaced inline 3-orb background div with `<AmbientOrbs />` (imported from `./components/AmbientOrbs`); 5 instances of `border-gray-700/50` → `border-gray-700/60` on stat, how-it-works, integration teaser, trust badge, FAQ, and pricing-tier cards. Highlighted Mid tier's `ring-green-700/50` retained unchanged.
+
+### app/about/page.tsx
+- Replaced inline orb background with `<AmbientOrbs />` (relative import `../components/AmbientOrbs`); both principle-card and CTA-section `border-gray-700/50` → `border-gray-700/60`.
+
+### app/pricing/page.tsx
+- Replaced inline orb background with `<AmbientOrbs />`; tier card, FAQ details, and final CTA section `border-gray-700/50` → `border-gray-700/60`. Mid-tier highlighted ring intentionally preserved per overseer rec #10 (canonical "important card" pattern).
+
+### app/integrations/page.tsx
+- Replaced inline orb background with `<AmbientOrbs />`; architecture-diagram container, integration article cards, security rows, and pilot-CTA section `border-gray-700/50` → `border-gray-700/60` (4 instances).
+
+### app/one-pager/page.tsx
+- Replaced inline orb background with `<AmbientOrbs />` wrapped in `<div className="no-print print:hidden">` to preserve print-hidden behavior. No `border-gray-700/50` instances existed on this page.

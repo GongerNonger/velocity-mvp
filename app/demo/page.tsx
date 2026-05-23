@@ -245,7 +245,7 @@ export default function StudentDashboard() {
                     <p className="text-sm opacity-90">{alert.message}</p>
                     {alert.severity === "high" && (
                       <p className="text-xs mt-2 opacity-70 font-medium">
-                        Suggested action: Advisor outreach within 48 hrs &rarr; review course load &rarr; consider tutoring referral.
+                        Example workflow (customizable per institution): advisor outreach &rarr; course-load review &rarr; tutoring referral.
                       </p>
                     )}
                   </div>
@@ -253,16 +253,16 @@ export default function StudentDashboard() {
               </div>
             )}
 
-            {/* Institution Impact — shows the before/after cost story when the student is behind */}
+            {/* Institution Impact — qualitative framing of the cost of a delayed graduation */}
             {recommendation.riskAlerts.some((a) => a.severity === "high") && (
               <div className="mb-8 rounded-xl border border-amber-800/40 bg-amber-950/20 p-6">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-widest text-amber-400 mb-2">Institution Impact — Without Intervention</p>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-amber-400 mb-2">Cost of a delayed graduation</p>
                     <p className="text-sm text-gray-300 max-w-2xl">
-                      A student like {selectedStudent.name.split(" ")[0]} who misses their target graduation by even one semester costs the institution an average of{" "}
-                      <span className="text-white font-semibold">$4,200 in extended support</span> and delays a tuition seat opening for the next cohort.
-                      Velocity surfaces this flag <span className="text-amber-300 font-semibold">before it becomes a withdrawal</span> — not after.
+                      When a student like {selectedStudent.name.split(" ")[0]} misses their target graduation by a semester, the institution typically absorbs
+                      one extra semester of advising load, financial aid, and tuition assistance, and a tuition seat for the next cohort is delayed.
+                      Surfacing the signal earlier gives advisors more time to plan an intervention.
                     </p>
                   </div>
                   <a

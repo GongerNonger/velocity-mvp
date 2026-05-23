@@ -100,7 +100,13 @@ export const metadata = {
 
 export default function IntegrationsPage() {
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-gray-950 relative">
+      {/* Animated background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="animate-orb-1 absolute -top-48 -left-48 w-[500px] h-[500px] rounded-full bg-green-900/15 blur-3xl" />
+        <div className="animate-orb-2 absolute top-1/2 -right-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
+        <div className="animate-orb-3 absolute -bottom-48 left-1/4 w-[450px] h-[450px] rounded-full bg-gray-700/15 blur-3xl" />
+      </div>
       <header className="border-b border-gray-800 bg-gray-950/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
@@ -139,7 +145,7 @@ export default function IntegrationsPage() {
 
         {/* Architecture diagram */}
         <section className="mb-16">
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 md:p-10">
+          <div className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 md:p-10">
             <h2 className="text-xl font-bold text-white mb-6 text-center">How data flows on a typical campus</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
               <ArchColumn
@@ -176,7 +182,7 @@ export default function IntegrationsPage() {
               <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-gray-500 mb-4">{category}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {INTEGRATIONS.filter((i) => i.category === category).map((i) => (
-                  <article key={i.name} className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                  <article key={i.name} className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 hover:border-green-700/50 hover:shadow-lg hover:shadow-green-900/10 transition-all duration-300 rounded-xl p-6">
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <h4 className="text-lg font-semibold text-white">{i.name}</h4>
                       <StatusPill status={i.status} />
@@ -212,7 +218,7 @@ export default function IntegrationsPage() {
           </p>
           <div className="space-y-3">
             {SECURITY.map((s) => (
-              <div key={s.label} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+              <div key={s.label} className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 hover:border-green-700/50 hover:shadow-lg hover:shadow-green-900/10 transition-all duration-300 rounded-xl p-5">
                 <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
                   <div className="md:w-48 shrink-0">
                     <span className="text-sm font-semibold text-white">{s.label}</span>
@@ -225,7 +231,7 @@ export default function IntegrationsPage() {
         </section>
 
         {/* Pilot path */}
-        <section className="bg-gray-900 border border-gray-800 rounded-2xl p-8 md:p-12 text-center">
+        <section className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 md:p-12 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-white">
             The fastest path to value: a 30-day CSV pilot.
           </h2>

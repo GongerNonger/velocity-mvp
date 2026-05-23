@@ -80,7 +80,7 @@ export function AIChat({
       {/* Trigger button (fixed bottom-right) */}
       <button
         onClick={() => setOpen(true)}
-        className={`fixed bottom-6 right-6 z-30 flex items-center gap-2 px-5 py-3.5 rounded-full shadow-lg shadow-green-900/40 text-white font-medium text-sm transition-all hover:scale-105 ${open ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+        className={`fixed bottom-6 right-6 z-30 flex items-center gap-2 px-5 py-3.5 rounded-full shadow-xl shadow-green-900/40 ring-2 ring-green-600/20 text-white font-medium text-sm transition-all hover:scale-105 ${open ? "opacity-0 pointer-events-none" : "opacity-100"}`}
         style={{ backgroundColor: "#275D38" }}
         aria-label="Open Velocity AI advisor"
       >
@@ -93,7 +93,7 @@ export function AIChat({
 
       {/* Slide-out panel */}
       <div
-        className={`fixed inset-y-0 right-0 z-40 w-full sm:w-[420px] bg-gray-900 border-l border-gray-800 shadow-2xl transition-transform duration-300 flex flex-col ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed inset-y-0 right-0 z-40 w-full sm:w-[420px] bg-gray-950/95 backdrop-blur-md border-l border-gray-700/60 shadow-2xl transition-transform duration-300 flex flex-col ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-800" style={{ backgroundColor: "rgba(39, 93, 56, 0.12)" }}>
@@ -141,10 +141,9 @@ export function AIChat({
                 <div
                   className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm whitespace-pre-wrap ${
                     m.role === "user"
-                      ? "bg-gray-800 text-gray-100 rounded-br-md"
-                      : "text-gray-100 rounded-bl-md"
+                      ? "bg-green-900/40 border border-green-800/30 text-gray-100 rounded-br-md"
+                      : "bg-gray-800/70 border border-gray-700/30 text-gray-100 rounded-bl-md"
                   }`}
-                  style={m.role === "assistant" ? { backgroundColor: "rgba(39, 93, 56, 0.18)", border: "1px solid rgba(39, 93, 56, 0.4)" } : undefined}
                   dangerouslySetInnerHTML={{ __html: m.role === "assistant" ? formatMarkdownLite(m.content) : escapeHtml(m.content) }}
                 />
               </div>
@@ -154,7 +153,7 @@ export function AIChat({
                     <button
                       key={s}
                       onClick={() => { onSuggestion?.(s); send(s); }}
-                      className="text-xs text-green-300 bg-green-950/40 hover:bg-green-900/40 border border-green-800/50 rounded-full px-3 py-1 transition-colors"
+                      className="text-xs text-green-300 bg-green-950/40 hover:bg-green-900/30 border border-green-800/50 hover:border-green-700/60 rounded-full px-3 py-1 transition-all duration-150"
                     >
                       {s}
                     </button>
@@ -166,7 +165,7 @@ export function AIChat({
 
           {typing && (
             <div className="flex justify-start">
-              <div className="rounded-2xl rounded-bl-md px-4 py-3" style={{ backgroundColor: "rgba(39, 93, 56, 0.18)", border: "1px solid rgba(39, 93, 56, 0.4)" }}>
+              <div className="rounded-2xl rounded-bl-md px-4 py-3 bg-gray-800/70 border border-gray-700/30">
                 <div className="flex gap-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-bounce" style={{ animationDelay: "0ms" }} />
                   <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-bounce" style={{ animationDelay: "120ms" }} />

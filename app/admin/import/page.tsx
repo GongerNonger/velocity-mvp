@@ -101,7 +101,13 @@ export default function ImportPage() {
   const hasInput = file !== null || pasted.trim().length > 0;
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="relative min-h-screen bg-gray-950">
+      {/* Animated orb background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="animate-orb-1 absolute -top-48 -right-48 w-[500px] h-[500px] rounded-full bg-green-900/12 blur-3xl" />
+        <div className="animate-orb-2 absolute bottom-1/4 -left-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
+        <div className="animate-orb-3 absolute top-1/3 right-1/3 w-[300px] h-[300px] rounded-full bg-gray-700/12 blur-3xl" />
+      </div>
       <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -152,7 +158,7 @@ export default function ImportPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div>
                 <label className="text-xs uppercase tracking-wide text-gray-400 font-medium block mb-2">Upload a file</label>
-                <div className="border-2 border-dashed border-gray-700 rounded-lg p-6 text-center hover:border-green-700 transition-colors">
+                <div className="border-2 border-dashed border-gray-700 rounded-lg p-6 text-center hover:border-green-600/60 transition-colors duration-200">
                   <input
                     ref={fileRef}
                     type="file"
@@ -285,7 +291,7 @@ export default function ImportPage() {
               </div>
               <div className="overflow-x-auto">
                 <table className="min-w-full text-xs">
-                  <thead className="bg-gray-950">
+                  <thead className="bg-gray-800/80 backdrop-blur-sm sticky top-0">
                     <tr className="text-left text-gray-400 uppercase tracking-wide">
                       <th className="px-4 py-2">#</th>
                       <th className="px-4 py-2">Name</th>
@@ -316,15 +322,15 @@ export default function ImportPage() {
                           </td>
                           <td className="px-4 py-2">
                             {bad ? (
-                              <span className="text-red-400 text-[11px]" title={r.errors.join("; ")}>
+                              <span className="inline-block text-red-400 text-[11px] px-1.5 py-0.5 rounded bg-red-950/30 shadow-sm shadow-red-900/30" title={r.errors.join("; ")}>
                                 Error: {r.errors[0]}
                               </span>
                             ) : warn ? (
-                              <span className="text-amber-400 text-[11px]" title={r.warnings.join("; ")}>
+                              <span className="inline-block text-amber-400 text-[11px] px-1.5 py-0.5 rounded bg-amber-950/20 shadow-sm shadow-amber-900/20" title={r.warnings.join("; ")}>
                                 Warning: {r.warnings[0]}
                               </span>
                             ) : (
-                              <span className="text-green-400 text-[11px]">OK</span>
+                              <span className="inline-block text-green-400 text-[11px] px-1.5 py-0.5 rounded bg-green-950/20 shadow-sm shadow-green-900/20">OK</span>
                             )}
                           </td>
                         </tr>
@@ -347,7 +353,7 @@ export default function ImportPage() {
                   <button
                     onClick={runCommit}
                     disabled={working || preview.summary.valid === 0}
-                    className="px-5 py-2.5 rounded-lg text-white font-medium text-sm transition-opacity disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-lg text-white font-medium text-sm transition-opacity disabled:opacity-50 shadow-lg shadow-green-900/40"
                     style={{ backgroundColor: "#275D38" }}
                   >
                     {working ? "Committing..." : `Commit ${preview.summary.valid} ${preview.summary.valid === 1 ? "student" : "students"}`}

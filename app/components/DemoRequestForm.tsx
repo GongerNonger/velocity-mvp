@@ -86,11 +86,11 @@ export function DemoRequestForm({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-lg shadow-2xl"
+        className="bg-gray-950 border border-gray-700/60 rounded-2xl w-full max-w-lg shadow-2xl shadow-black/60"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-5 border-b border-gray-800">
@@ -127,18 +127,21 @@ export function DemoRequestForm({
                 day="Day 1"
                 title="Scoping call (15 min)"
                 body="We confirm fit and walk through your data shape."
+                className="animate-fade-in-up"
               />
               <TimelineStep
                 step={2}
                 day="Day 5"
                 title="DPA + pilot agreement sent"
                 body="Pre-drafted, lawyer-friendly, FERPA-compliant."
+                className="animate-fade-in-up-delay-1"
               />
               <TimelineStep
                 step={3}
                 day="Day 8"
                 title="300 students invited"
-                body={"Your first cohort uses Velocity within 8 days of “yes.”"}
+                body={`Your first cohort uses Velocity within 8 days of “yes.”`}
+                className="animate-fade-in-up-delay-2"
               />
             </ol>
 
@@ -258,7 +261,7 @@ export function DemoRequestForm({
 }
 
 const inputClass =
-  "w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-green-600 placeholder-gray-600";
+  "w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-1 focus:ring-green-600/50 focus:border-green-600/50 placeholder-gray-600 transition-colors duration-150";
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
@@ -277,14 +280,16 @@ function TimelineStep({
   day,
   title,
   body,
+  className,
 }: {
   step: number;
   day: string;
   title: string;
   body: string;
+  className?: string;
 }) {
   return (
-    <li className="relative flex gap-4">
+    <li className={`relative flex gap-4${className ? ` ${className}` : ""}`}>
       <div
         className="relative z-10 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white border"
         style={{

@@ -164,7 +164,7 @@ export default function AdminDashboard() {
             <h3 className="text-lg font-semibold text-white mb-4">Popular Career Aspirations</h3>
             <div className="space-y-3">
               {analytics.popularCareerPaths.map((path, i) => (
-                <div key={i} className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3 border border-gray-700">
+                <div key={i} className="flex items-center justify-between bg-gray-800/50 rounded-lg p-3 border border-gray-700 hover:border-gray-600 transition-colors duration-150">
                   <span className="text-gray-200">{path.path}</span>
                   <span className="text-sm font-medium" style={{ color: "#4CAF50" }}>{path.count} student{path.count !== 1 ? "s" : ""}</span>
                 </div>

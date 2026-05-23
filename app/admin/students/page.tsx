@@ -68,7 +68,13 @@ export default function StudentsListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="relative min-h-screen bg-gray-950">
+      {/* Animated orb background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="animate-orb-1 absolute -top-48 -right-48 w-[500px] h-[500px] rounded-full bg-green-900/12 blur-3xl" />
+        <div className="animate-orb-2 absolute bottom-1/4 -left-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
+        <div className="animate-orb-3 absolute top-1/3 right-1/3 w-[300px] h-[300px] rounded-full bg-gray-700/12 blur-3xl" />
+      </div>
       <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -105,7 +111,7 @@ export default function StudentsListPage() {
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-1">Students</h2>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent mb-1">Student Roster</h2>
             <p className="text-gray-500 text-sm">
               {students.length} students in the loaded sample. At-risk students are sorted to the top.
             </p>
@@ -125,9 +131,9 @@ export default function StudentsListPage() {
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-all duration-150 ${
                     active
-                      ? "text-white border-transparent"
+                      ? "text-white border-transparent shadow-md shadow-green-900/30"
                       : "text-gray-300 border-gray-700 bg-gray-900 hover:border-gray-500"
                   }`}
                   style={active ? { backgroundColor: "#275D38" } : undefined}
@@ -161,16 +167,16 @@ export default function StudentsListPage() {
                       : 0;
                   const badgeClass =
                     s.risk === "at-risk"
-                      ? "bg-red-900/50 text-red-300 border-red-800/50"
+                      ? "bg-red-900/50 text-red-300 border-red-800/50 shadow-sm shadow-red-900/30"
                       : s.risk === "watch"
                       ? "bg-amber-900/50 text-amber-300 border-amber-800/50"
-                      : "bg-green-900/40 text-green-300 border-green-800/50";
+                      : "bg-green-900/40 text-green-300 border-green-800/50 shadow-sm shadow-green-900/30";
                   const label =
                     s.risk === "at-risk" ? "At-risk" : s.risk === "watch" ? "Watch" : "On-track";
                   return (
                     <tr
                       key={s.id}
-                      className="border-b border-gray-800/70 last:border-0 hover:bg-gray-800/40 transition-colors"
+                      className="border-b border-gray-800/70 last:border-0 hover:bg-gray-800/60 hover:border-gray-600/60 transition-all duration-150"
                     >
                       <td className="px-4 py-3">
                         <a href={`/demo?student=${s.id}`} className="text-white font-medium hover:text-green-300">

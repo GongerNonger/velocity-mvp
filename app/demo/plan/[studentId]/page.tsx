@@ -68,10 +68,20 @@ export default function PlanPage() {
   }
 
   const statusColor = (s: SemesterPlan["status"]) =>
-    s === "completed" ? "bg-gray-800/50 border-gray-800" : s === "current" ? "border-green-700" : "bg-gray-900 border-gray-800";
+    s === "completed"
+      ? "bg-gray-800/50 border-gray-800 opacity-60"
+      : s === "current"
+      ? "border-green-700 ring-1 ring-green-600/50 shadow-md shadow-green-900/20"
+      : "bg-gray-900 border-gray-800";
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="relative min-h-screen bg-gray-950">
+      {/* Animated orb background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="animate-orb-1 absolute -top-48 -left-48 w-[500px] h-[500px] rounded-full bg-green-900/15 blur-3xl" />
+        <div className="animate-orb-2 absolute top-1/2 -right-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
+        <div className="animate-orb-3 absolute -bottom-48 left-1/3 w-[450px] h-[450px] rounded-full bg-gray-700/15 blur-3xl" />
+      </div>
       <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -111,7 +121,7 @@ export default function PlanPage() {
                 <div className="text-xs text-gray-500">Semesters</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold" style={{ color: "#4CAF50" }}>{plan.projectedGraduation}</div>
+                <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">{plan.projectedGraduation}</div>
                 <div className="text-xs text-gray-500">Target Graduation</div>
               </div>
               <div className="text-center">
@@ -142,7 +152,7 @@ export default function PlanPage() {
           {plan.semesters.map((sem, i) => (
             <div
               key={i}
-              className={`rounded-xl border-2 p-4 min-h-[320px] flex flex-col ${statusColor(sem.status)}`}
+              className={`rounded-xl border-2 p-4 min-h-[320px] flex flex-col hover:-translate-y-0.5 transition-transform duration-200 ${statusColor(sem.status)}`}
               style={sem.status === "current" ? { backgroundColor: "rgba(39, 93, 56, 0.08)" } : undefined}
             >
               <div className="flex items-center justify-between mb-3">

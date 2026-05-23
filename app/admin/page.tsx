@@ -62,11 +62,14 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div className="flex items-center gap-5">
+            <a href="/portal" className="text-sm text-gray-400 hover:text-white transition-colors">
+              &larr; Switch role
+            </a>
+            <a href="/counselor" className="text-sm text-gray-400 hover:text-green-400 transition-colors hidden sm:inline">
+              Counselor caseload
+            </a>
             <a href="/admin/import" className="text-sm text-gray-400 hover:text-green-400 transition-colors">
               Import CSV
-            </a>
-            <a href="/demo" className="text-sm text-gray-400 hover:text-green-400 transition-colors">
-              Student View
             </a>
           </div>
         </div>
@@ -101,7 +104,7 @@ export default function AdminDashboard() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
             <h3 className="text-lg font-semibold text-white">Retention &amp; Success Indicators</h3>
             <a
-              href="/admin/students"
+              href="/counselor"
               className="text-sm font-medium text-green-400 hover:text-green-300 transition-colors flex items-center gap-1"
             >
               View at-risk student list
@@ -110,7 +113,7 @@ export default function AdminDashboard() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {analytics.retentionIndicators.map((indicator, i) => (
-              <a key={i} href="/admin/students" className="block bg-gray-800/50 rounded-lg p-4 border border-gray-700 hover:border-green-700/60 hover:shadow-md hover:shadow-green-900/10 transition-all duration-300 group">
+              <a key={i} href="/counselor" className="block bg-gray-800/50 rounded-lg p-4 border border-gray-700 hover:border-green-700/60 hover:shadow-md hover:shadow-green-900/10 transition-all duration-300 group">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-gray-400">{indicator.metric}</span>
                   <span

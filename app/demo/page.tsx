@@ -76,14 +76,18 @@ export default function StudentDashboard() {
   const [activeTab, setActiveTab] = useState<"progress" | "courses" | "career" | "skills">("progress");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [role, setRole] = useState<"student" | "counselor" | "demo">("demo");
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const r = params.get("role");
+    if (r === "student" || r === "counselor") setRole(r);
     fetch("/api/students")
       .then((r) => r.json())
       .then((data) => {
         setStudents(data.students);
         if (data.students.length > 0) {
-          const paramId = new URLSearchParams(window.location.search).get("student");
+          const paramId = params.get("student");
           const match = paramId && data.students.find((s: Student) => s.id === paramId);
           loadStudentData(match ? paramId! : data.students[0].id);
         }
@@ -177,10 +181,16 @@ export default function StudentDashboard() {
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-bold text-white">Velocity</h1>
                 <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ backgroundColor: "#275D38", color: "white" }}>
-                  Demo
+                  {role === "student" ? "Student" : role === "counselor" ? "Counselor" : "Demo"}
                 </span>
               </div>
-              <p className="text-xs text-gray-500">AI Academic Advisor &middot; Sample data &middot; FERPA-compliant</p>
+              <p className="text-xs text-gray-500">
+                {role === "student"
+                  ? "Your degree plan & recommendations"
+                  : role === "counselor"
+                  ? "Student profile (counselor view)"
+                  : "AI Academic Advisor · Sample data · FERPA-compliant"}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -192,22 +202,58 @@ export default function StudentDashboard() {
                 4-Year Plan
               </a>
             )}
-            <a href="/admin" className="text-sm text-gray-400 hover:text-green-400 transition-colors">
-              Admin Dashboard
-            </a>
-            {selectedStudent && (
-              <select
-                className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:ring-1"
-                style={{ borderColor: selectedStudent ? "#275D38" : undefined }}
-                value={selectedStudent.id}
-                onChange={(e) => loadStudentData(e.target.value)}
-              >
-                {students.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} — {s.major}
-                  </option>
-                ))}
-              </select>
+            {role === "student" ? (
+              <>
+                <a href="/student" className="text-sm text-gray-400 hover:text-green-400 transition-colors hidden sm:inline">
+                  Use a different ID
+                </a>
+                <a href="/portal" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  &larr; Switch role
+                </a>
+              </>
+            ) : role === "counselor" ? (
+              <>
+                <a href="/counselor" className="text-sm text-gray-400 hover:text-green-400 transition-colors">
+                  &larr; Back to caseload
+                </a>
+                {selectedStudent && (
+                  <select
+                    className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:ring-1"
+                    style={{ borderColor: "#275D38" }}
+                    value={selectedStudent.id}
+                    onChange={(e) => loadStudentData(e.target.value)}
+                  >
+                    {students.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name} — {s.major}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </>
+            ) : (
+              <>
+                <a href="/admin" className="text-sm text-gray-400 hover:text-green-400 transition-colors">
+                  Admin Dashboard
+                </a>
+                <a href="/portal" className="text-sm text-gray-400 hover:text-white transition-colors hidden sm:inline">
+                  Switch role
+                </a>
+                {selectedStudent && (
+                  <select
+                    className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-gray-200 focus:outline-none focus:ring-1"
+                    style={{ borderColor: "#275D38" }}
+                    value={selectedStudent.id}
+                    onChange={(e) => loadStudentData(e.target.value)}
+                  >
+                    {students.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name} — {s.major}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </>
             )}
           </div>
         </div>

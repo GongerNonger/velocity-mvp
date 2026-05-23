@@ -141,11 +141,11 @@ export default function Landing() {
             <Link href="/pricing" className="text-gray-400 hover:text-white transition-colors hidden sm:inline">Pricing</Link>
             <Link href="/about" className="text-gray-400 hover:text-white transition-colors hidden md:inline">About</Link>
             <Link
-              href="/demo"
+              href="/portal"
               className="px-4 py-2 rounded-lg text-white text-sm font-medium transition-opacity hover:opacity-90"
               style={{ backgroundColor: "#275D38" }}
             >
-              See Live Demo &rarr;
+              Open the app &rarr;
             </Link>
           </nav>
         </div>
@@ -175,11 +175,11 @@ export default function Landing() {
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in-up [animation-delay:300ms]">
             <Link
-              href="/demo"
+              href="/portal"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-lg text-white font-medium transition-all hover:-translate-y-0.5 shadow-lg shadow-green-900/40"
               style={{ backgroundColor: "#275D38" }}
             >
-              See Live Demo &rarr;
+              Open the app &rarr;
             </Link>
             <button
               onClick={() => openDemo("landing-hero")}
@@ -188,6 +188,11 @@ export default function Landing() {
               Request a Pilot
             </button>
           </div>
+          <p className="text-xs text-gray-500 mt-5 max-w-md mx-auto">
+            Three views &mdash; <Link href="/student" className="text-green-400 hover:text-green-300">student</Link>,{" "}
+            <Link href="/counselor" className="text-green-400 hover:text-green-300">counselor</Link>, and{" "}
+            <Link href="/admin" className="text-green-400 hover:text-green-300">administrator</Link>. Pick one to try.
+          </p>
           <p className="text-xs text-gray-600 mt-10">
             Founded by UVU students &middot; Built for every campus
           </p>
@@ -255,11 +260,11 @@ export default function Landing() {
               style={{ background: "radial-gradient(ellipse at center, rgba(39, 93, 56, 0.15), transparent 70%)" }}
             >
               <Link
-                href="/demo"
+                href="/portal"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-white font-medium transition-all hover:-translate-y-0.5 shadow-lg shadow-green-900/40"
                 style={{ backgroundColor: "#275D38" }}
               >
-                View Live Dashboard &rarr;
+                Choose your view &rarr;
               </Link>
             </div>
           </div>
@@ -501,11 +506,11 @@ export default function Landing() {
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
-              href="/demo"
+              href="/portal"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-lg text-white font-medium transition-all hover:-translate-y-0.5 shadow-lg shadow-green-900/40"
               style={{ backgroundColor: "#275D38" }}
             >
-              Launch Live Demo &rarr;
+              Open the app &rarr;
             </Link>
             <button
               onClick={() => openDemo("landing-final")}
@@ -523,10 +528,12 @@ export default function Landing() {
             <div>
               <div className="text-xs uppercase tracking-wider text-gray-500 mb-3">Product</div>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/demo" className="text-gray-400 hover:text-white">Live demo</Link></li>
+                <li><Link href="/portal" className="text-gray-400 hover:text-white">Open the app</Link></li>
+                <li><Link href="/student" className="text-gray-400 hover:text-white">Student sign-in</Link></li>
+                <li><Link href="/counselor" className="text-gray-400 hover:text-white">Counselor caseload</Link></li>
+                <li><Link href="/admin" className="text-gray-400 hover:text-white">Admin dashboard</Link></li>
                 <li><Link href="/integrations" className="text-gray-400 hover:text-white">Integrations</Link></li>
                 <li><Link href="/pricing" className="text-gray-400 hover:text-white">Pricing</Link></li>
-                <li><Link href="/admin" className="text-gray-400 hover:text-white">Advisor view</Link></li>
               </ul>
             </div>
             <div>

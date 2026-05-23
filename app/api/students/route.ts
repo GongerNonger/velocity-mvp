@@ -7,6 +7,7 @@ export async function GET() {
       id: s.id,
       name: s.name,
       email: s.email,
+      uvid: s.uvid,
       major: s.major,
       minor: s.minor,
       gpa: s.gpa,

@@ -163,7 +163,13 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="relative min-h-screen bg-gray-950">
+      {/* Animated orb background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="animate-orb-1 absolute -top-48 -left-48 w-[500px] h-[500px] rounded-full bg-green-900/15 blur-3xl" />
+        <div className="animate-orb-2 absolute top-1/2 -right-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
+        <div className="animate-orb-3 absolute -bottom-48 left-1/3 w-[450px] h-[450px] rounded-full bg-gray-700/15 blur-3xl" />
+      </div>
       {/* UVU-branded Header */}
       <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -215,7 +221,7 @@ export default function StudentDashboard() {
         {selectedStudent && recommendation && (
           <>
             {/* Student Info Bar */}
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
+            <div className="animate-fade-in-up bg-gray-900 border border-gray-700/60 rounded-xl p-6 mb-8 shadow-lg shadow-black/20">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h2 className="text-2xl font-bold text-white">{selectedStudent.name}</h2>
@@ -255,27 +261,28 @@ export default function StudentDashboard() {
                     {recommendation.progressSummary.creditsRemaining} remaining
                   </span>
                 </div>
-                <div className="w-full bg-gray-800 rounded-full h-3">
+                <div className="w-full bg-gray-800 rounded-full h-3 relative overflow-hidden">
                   <div
                     className="h-3 rounded-full transition-all duration-500"
                     style={{ width: `${recommendation.progressSummary.percentComplete}%`, backgroundColor: "#275D38" }}
                   />
+                  <span className="animate-shimmer absolute inset-0 pointer-events-none" />
                 </div>
               </div>
             </div>
 
             {/* Risk Alerts */}
             {recommendation.riskAlerts.length > 0 && (
-              <div className="mb-8 space-y-3">
+              <div className="animate-fade-in-up-delay-1 mb-8 space-y-3">
                 {recommendation.riskAlerts.map((alert, i) => (
                   <div
                     key={i}
-                    className={`border rounded-lg p-4 ${
+                    className={`border border-l-4 rounded-lg p-4 ${
                       alert.severity === "high"
-                        ? "bg-red-950/30 border-red-800 text-red-300"
+                        ? "bg-red-950/30 border-red-800 border-l-red-500/60 text-red-300"
                         : alert.severity === "medium"
-                        ? "bg-amber-950/30 border-amber-800 text-amber-300"
-                        : "bg-green-950/30 border-green-800 text-green-300"
+                        ? "bg-amber-950/30 border-amber-800 border-l-amber-500/60 text-amber-300"
+                        : "bg-green-950/30 border-green-800 border-l-green-500/60 text-green-300"
                     }`}
                   >
                     <div className="flex items-center gap-2 mb-1">
@@ -329,9 +336,9 @@ export default function StudentDashboard() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                     activeTab === tab
-                      ? "text-white"
+                      ? "text-white shadow-md shadow-green-900/30"
                       : "text-gray-400 hover:text-white hover:bg-gray-800"
                   }`}
                   style={activeTab === tab ? { backgroundColor: "#275D38" } : undefined}
@@ -343,7 +350,7 @@ export default function StudentDashboard() {
 
             {/* Tab Content */}
             {activeTab === "progress" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="animate-fade-in-up-delay-2 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Graduation Timeline</h3>
                   <div className="space-y-4">
@@ -398,11 +405,11 @@ export default function StudentDashboard() {
             )}
 
             {activeTab === "courses" && (
-              <div className="space-y-4">
+              <div className="animate-fade-in-up-delay-2 space-y-4">
                 <h3 className="text-lg font-semibold text-white">Recommended Next Courses</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {recommendation.recommendedCourses.map((rec, i) => (
-                    <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-green-700 transition-colors">
+                    <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-green-700/50 hover:shadow-md hover:shadow-green-900/10 transition-all duration-300">
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <span className="text-xs font-mono" style={{ color: "#4CAF50" }}>{rec.course.code}</span>
@@ -425,11 +432,11 @@ export default function StudentDashboard() {
             )}
 
             {activeTab === "career" && careerAnalysis && (
-              <div className="space-y-6">
+              <div className="animate-fade-in-up-delay-2 space-y-6">
                 <h3 className="text-lg font-semibold text-white">Career Pathway Matches</h3>
                 <div className="space-y-4">
                   {careerAnalysis.matchedPaths.map((match, i) => (
-                    <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                    <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-green-700/50 hover:shadow-md hover:shadow-green-900/10 transition-all duration-300">
                       <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
                         <div>
                           <h4 className="text-white font-semibold text-lg">{match.career.title}</h4>
@@ -479,7 +486,7 @@ export default function StudentDashboard() {
             )}
 
             {activeTab === "skills" && careerAnalysis && selectedStudent && (
-              <div className="space-y-6">
+              <div className="animate-fade-in-up-delay-2 space-y-6">
                 <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
                   <h3 className="text-lg font-semibold text-white mb-4">Current Skills</h3>
                   <div className="flex flex-wrap gap-2">

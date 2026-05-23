@@ -120,7 +120,13 @@ export default function Landing() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen bg-gray-950 relative">
+      {/* Animated background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="animate-orb-1 absolute -top-48 -left-48 w-[500px] h-[500px] rounded-full bg-green-900/15 blur-3xl" />
+        <div className="animate-orb-2 absolute top-1/2 -right-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
+        <div className="animate-orb-3 absolute -bottom-48 left-1/4 w-[450px] h-[450px] rounded-full bg-gray-700/15 blur-3xl" />
+      </div>
       {/* Header */}
       <header className="border-b border-gray-800 bg-gray-950/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -160,17 +166,17 @@ export default function Landing() {
           <div className="inline-block text-[11px] font-semibold uppercase tracking-[0.25em] text-green-400 mb-8">
             AI Academic Advising &middot; Built for Higher Ed
           </div>
-          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight leading-[1.05]">
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05] bg-gradient-to-br from-white via-gray-100 to-gray-400 bg-clip-text text-transparent animate-fade-in-up">
             Every student gets a<br className="hidden md:inline" />{" "}
             <span style={{ color: "#4CAF50" }}>Stanford-grade advisor.</span>
             <br />
             Every advisor gets superpowers.
           </h1>
-          <p className="text-lg md:text-xl text-gray-400 mt-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-400 mt-8 max-w-2xl mx-auto leading-relaxed animate-fade-in-up [animation-delay:150ms]">
             Velocity is the AI advising platform that turns a 40,000-student university into 40,000 personalized degree plans.
             Catch at-risk students before they drop out. Match every graduate to a career they&apos;ll actually love.
           </p>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in-up [animation-delay:300ms]">
             <Link
               href="/demo"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-lg text-white font-medium transition-all hover:-translate-y-0.5 shadow-lg shadow-green-900/40"
@@ -200,7 +206,7 @@ export default function Landing() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {PROBLEM_STATS.map((s) => (
-              <div key={s.stat} className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
+              <div key={s.stat} className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 hover:border-green-700/50 hover:shadow-lg hover:shadow-green-900/10 transition-all duration-300 rounded-xl p-8 text-center">
                 <div className="text-5xl md:text-6xl font-black" style={{ color: "#4CAF50" }}>{s.stat}</div>
                 <div className="text-sm text-white font-medium mt-3">{s.label}</div>
                 <p className="text-sm text-gray-400 mt-3 leading-relaxed">{s.body}</p>
@@ -218,7 +224,7 @@ export default function Landing() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {STEPS.map((s) => (
-            <div key={s.n} className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+            <div key={s.n} className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 hover:border-green-700/50 hover:shadow-lg hover:shadow-green-900/10 transition-all duration-300 rounded-xl p-6">
               <div
                 className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white mb-4"
                 style={{ backgroundColor: "#275D38" }}
@@ -280,7 +286,7 @@ export default function Landing() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {INTEGRATIONS_TEASER.map((i) => (
-              <div key={i.name} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+              <div key={i.name} className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 hover:border-green-700/50 hover:shadow-lg hover:shadow-green-900/10 transition-all duration-300 rounded-xl p-5">
                 <div className="text-sm font-semibold text-white">{i.name}</div>
                 <div className="text-xs text-gray-400 mt-1">{i.note}</div>
               </div>
@@ -347,7 +353,7 @@ export default function Landing() {
             ].map((b) => (
               <div
                 key={b.label}
-                className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-start gap-3"
+                className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 hover:border-green-700/50 hover:shadow-lg hover:shadow-green-900/10 transition-all duration-300 rounded-xl p-4 flex items-start gap-3"
               >
                 <div
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"
@@ -414,7 +420,7 @@ export default function Landing() {
               return (
                 <div
                   key={tier.name}
-                  className={`rounded-xl p-6 bg-gray-900 border ${highlight ? "border-green-700" : "border-gray-800"} relative ${highlight ? "md:scale-105" : ""}`}
+                  className={`rounded-xl p-6 bg-gray-900/70 backdrop-blur-sm border transition-all duration-300 ${highlight ? "border-green-700 ring-1 ring-green-700/50 shadow-lg shadow-green-900/20" : "border-gray-700/50 hover:border-green-700/50 hover:shadow-lg hover:shadow-green-900/10"} relative ${highlight ? "md:scale-105" : ""}`}
                   style={highlight ? { boxShadow: "0 0 0 1px rgba(39, 93, 56, 0.4), 0 12px 40px rgba(39, 93, 56, 0.15)" } : undefined}
                 >
                   {highlight && (
@@ -476,7 +482,7 @@ export default function Landing() {
         </div>
         <div className="space-y-3">
           {FAQ_ENTRIES.map((entry, i) => (
-            <details key={i} className="group bg-gray-900 border border-gray-800 rounded-xl">
+            <details key={i} className="group bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 hover:border-green-700/50 transition-all duration-300 rounded-xl">
               <summary className="cursor-pointer list-none p-5 flex items-start justify-between gap-4 hover:bg-gray-900/60 transition-colors">
                 <span className="text-white font-medium text-sm md:text-base">{entry.q}</span>
                 <span className="text-gray-500 group-open:rotate-45 transition-transform shrink-0 mt-0.5">&#x2b;</span>

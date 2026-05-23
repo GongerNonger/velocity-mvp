@@ -41,7 +41,13 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="relative min-h-screen bg-gray-950">
+      {/* Animated orb background */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="animate-orb-1 absolute -top-48 -right-48 w-[500px] h-[500px] rounded-full bg-green-900/12 blur-3xl" />
+        <div className="animate-orb-2 absolute bottom-1/4 -left-48 w-[400px] h-[400px] rounded-full bg-emerald-900/10 blur-3xl" />
+        <div className="animate-orb-3 absolute top-1/3 right-1/3 w-[300px] h-[300px] rounded-full bg-gray-700/12 blur-3xl" />
+      </div>
       {/* UVU Header */}
       <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -76,19 +82,19 @@ export default function AdminDashboard() {
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <div className="animate-fade-in-up bg-gray-900 border border-gray-700/60 rounded-xl p-6 shadow-md shadow-black/20">
             <div className="text-3xl font-bold" style={{ color: "#4CAF50" }}>{analytics.totalStudents}</div>
             <div className="text-sm text-gray-400 mt-1">Total Students (Demo)</div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <div className="animate-fade-in-up-delay-1 bg-gray-900 border border-gray-700/60 rounded-xl p-6 shadow-md shadow-black/20">
             <div className="text-3xl font-bold text-white">{analytics.averageGPA}</div>
             <div className="text-sm text-gray-400 mt-1">Average GPA</div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <div className="animate-fade-in-up-delay-2 bg-gray-900 border border-gray-700/60 rounded-xl p-6 shadow-md shadow-black/20">
             <div className="text-3xl font-bold text-white">{analytics.averageProgress}%</div>
             <div className="text-sm text-gray-400 mt-1">Avg. Degree Progress</div>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+          <div className="animate-fade-in-up-delay-3 bg-gray-900 border border-gray-700/60 rounded-xl p-6 shadow-md shadow-black/20">
             <div className="text-3xl font-bold text-white">{analytics.averageCreditsCompleted}</div>
             <div className="text-sm text-gray-400 mt-1">Avg. Credits Completed</div>
           </div>
@@ -108,7 +114,7 @@ export default function AdminDashboard() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {analytics.retentionIndicators.map((indicator, i) => (
-              <a key={i} href="/admin/students" className="block bg-gray-800/50 rounded-lg p-4 border border-gray-700 hover:border-green-700/60 transition-colors group">
+              <a key={i} href="/admin/students" className="block bg-gray-800/50 rounded-lg p-4 border border-gray-700 hover:border-green-700/60 hover:shadow-md hover:shadow-green-900/10 transition-all duration-300 group">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-gray-400">{indicator.metric}</span>
                   <span
@@ -143,8 +149,9 @@ export default function AdminDashboard() {
                       <span className="text-gray-300">{dept.department}</span>
                       <span className="text-gray-400">{dept.students} students ({pct}%)</span>
                     </div>
-                    <div className="w-full bg-gray-800 rounded-full h-2">
+                    <div className="w-full bg-gray-800 rounded-full h-2 relative overflow-hidden">
                       <div className="h-2 rounded-full" style={{ width: `${pct}%`, backgroundColor: "#275D38" }} />
+                      <div className="animate-shimmer absolute inset-0 rounded-full" />
                     </div>
                   </div>
                 );

@@ -464,6 +464,109 @@ export function answerStudentQuestion(student: Student, question: string): ChatR
     };
   }
 
+  // Compare majors side-by-side (placed before generic career intent so it isn't shadowed)
+  if (
+    has("compare majors", "different major", "another major", "change major", "switch major", "switched to", "switch to", "should i switch", "would be better", "be better") ||
+    q.match(/compare\s+.+\s+(vs|versus|or|to|with|and)\s+.+/) ||
+    q.match(/\bwhat if i (switched|changed|moved)\b/) ||
+    q.match(/\bwould\s+.+\s+be better\b/) ||
+    (q.includes(" vs ") && (q.includes("major") || q.includes("compare"))) ||
+    (q.includes(" versus ") && (q.includes("major") || q.includes("compare")))
+  ) {
+    // Find any major names mentioned in the question (case-insensitive substring; longest-match first)
+    const qLower = q;
+    const sortedDegrees = [...degreeRequirements].sort((a, b) => b.major.length - a.major.length);
+    const matched: DegreeRequirement[] = [];
+    const claimedSpans: Array<[number, number]> = [];
+    for (const deg of sortedDegrees) {
+      // Try full name first, then individual significant tokens / common short aliases
+      const aliases = new Set<string>([deg.major.toLowerCase()]);
+      // Last word alias (e.g. "Computer Science — Full Stack Web Development Emphasis" → "computer science")
+      const baseName = deg.major.split("—")[0].trim().toLowerCase();
+      if (baseName) aliases.add(baseName);
+      // Common short aliases
+      const shortMap: Record<string, string> = {
+        "computer science": "cs",
+        "information technology": "it",
+        "software engineering": "se",
+        "mechanical engineering": "me",
+        "electrical engineering": "ee",
+      };
+      if (shortMap[baseName]) aliases.add(shortMap[baseName]);
+
+      let hit: { idx: number; len: number } | null = null;
+      for (const alias of aliases) {
+        // Word-boundary search to avoid matching "it" inside other words
+        const pattern = new RegExp(`(^|[^a-z0-9])${alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}([^a-z0-9]|$)`, "i");
+        const m = pattern.exec(qLower);
+        if (m && m.index !== undefined) {
+          const start = m.index + (m[1] ? m[1].length : 0);
+          const end = start + alias.length;
+          // Skip if span overlaps an already-claimed major
+          if (claimedSpans.some(([s, e]) => start < e && end > s)) continue;
+          hit = { idx: start, len: alias.length };
+          break;
+        }
+      }
+      if (hit && !matched.find((d) => d.id === deg.id)) {
+        matched.push(deg);
+        claimedSpans.push([hit.idx, hit.idx + hit.len]);
+        if (matched.length === 2) break;
+      }
+    }
+
+    const popularMajors = ["Computer Science", "Business Management", "Nursing"];
+
+    if (matched.length < 2) {
+      const identified = matched[0] ? ` I spotted **${matched[0].major}** but need a second to compare against.` : "";
+      return {
+        answer: `I can compare any two majors side-by-side, ${firstName}.${identified} Try: *"Compare Computer Science vs Data Analysis"* or *"What if I switched to Finance vs Marketing?"*`,
+        suggestions: popularMajors.map((m) => `Compare ${student.major} vs ${m}`),
+        followUpPrompts: ["List all available majors", "Which major has the highest salary?"],
+        context: { type: "general" },
+      };
+    }
+
+    // Compute per-major snapshot
+    const studentSkillsLower = student.skills.map((s) => s.toLowerCase());
+    const snapshots = matched.map((deg) => {
+      // Avg credits already completed by students declared in this major
+      const cohort = students.filter((s) => s.major === deg.major);
+      const avgCredits = cohort.length > 0 ? Math.round(cohort.reduce((sum, s) => sum + s.completedCredits, 0) / cohort.length) : 0;
+
+      // Top career match: best career among those listing this major as related
+      const relatedCareers = careerPaths.filter((cp) => cp.relatedMajors.includes(deg.major));
+      let topCareer: CareerPath | null = null;
+      let topScore = 0;
+      for (const cp of relatedCareers) {
+        const matchedCount = cp.requiredSkills.filter((s) => studentSkillsLower.includes(s.toLowerCase())).length;
+        const score = cp.requiredSkills.length > 0 ? Math.round((matchedCount / cp.requiredSkills.length) * 100) : 0;
+        if (score >= topScore) {
+          topScore = score;
+          topCareer = cp;
+        }
+      }
+
+      return {
+        major: deg.major,
+        totalCredits: deg.totalCredits,
+        avgCompleted: avgCredits,
+        topCareer: topCareer ? topCareer.title : "—",
+        topScore,
+        topSalary: topCareer ? topCareer.averageSalary : 0,
+      };
+    });
+
+    const lines = snapshots.map((s) => `**${s.major}**: ${s.totalCredits} cr required, cohort avg ${s.avgCompleted} cr done. Top match: ${s.topCareer} (${s.topScore}%, $${s.topSalary.toLocaleString()})`);
+
+    return {
+      answer: `Here's how **${snapshots[0].major}** stacks up against **${snapshots[1].major}** for you, ${firstName}:\n\n${lines.join("\n")}\n\nWant me to map out a 4-year plan in either one?`,
+      suggestions: [`Switch me to ${snapshots[0].major}`, `Switch me to ${snapshots[1].major}`, "Show transferable credits"],
+      followUpPrompts: [`What courses would I lose switching to ${snapshots[1].major}?`, "Which has the better job outlook?"],
+      context: { type: "career", data: snapshots },
+    };
+  }
+
   // Career questions
   if (has("career", "job", "jobs", "salary", "work", "industry", "hire", "hired", "employment", "profession", "occupation") || q.includes("after graduation") || q.includes("what can i do") || q.includes("make money") || q.includes("earn")) {
     const analysis = analyzeCareerPathways(student);

@@ -109,24 +109,61 @@ export function DemoRequestForm({
         </div>
 
         {done ? (
-          <div className="p-8 text-center">
-            <div
-              className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ backgroundColor: "rgba(39, 93, 56, 0.25)", border: "1px solid rgba(39, 93, 56, 0.5)" }}
-            >
-              <span className="text-2xl" style={{ color: "#4CAF50" }}>&check;</span>
-            </div>
-            <p className="text-white text-base font-medium">Your pilot request is in.</p>
-            <p className="text-gray-400 text-sm mt-2">
-              We&apos;ll reach out within 1 business day with a 30-day pilot scoping document tailored to {institution || "your institution"}.
+          <div className="p-6 sm:p-8">
+            <p className="text-white text-base font-semibold text-center">
+              Your pilot request is in.
             </p>
-            <button
-              onClick={onClose}
-              className="mt-6 px-5 py-2 rounded-lg text-white text-sm font-medium"
-              style={{ backgroundColor: "#275D38" }}
-            >
-              Back to demo
-            </button>
+            <p className="text-gray-400 text-sm mt-1.5 text-center">
+              Here&apos;s exactly what happens next for {institution || "your institution"}:
+            </p>
+
+            <ol className="relative mt-6 space-y-5">
+              <span
+                aria-hidden="true"
+                className="absolute left-4 top-4 bottom-4 w-px bg-gray-800"
+              />
+              <TimelineStep
+                step={1}
+                day="Day 1"
+                title="Scoping call (15 min)"
+                body="We confirm fit and walk through your data shape."
+              />
+              <TimelineStep
+                step={2}
+                day="Day 5"
+                title="DPA + pilot agreement sent"
+                body="Pre-drafted, lawyer-friendly, FERPA-compliant."
+              />
+              <TimelineStep
+                step={3}
+                day="Day 8"
+                title="300 students invited"
+                body={"Your first cohort uses Velocity within 8 days of “yes.”"}
+              />
+            </ol>
+
+            <div className="mt-6 pt-5 border-t border-gray-800 text-center">
+              <p className="text-xs text-gray-400">
+                Want to jump ahead?{" "}
+                <a
+                  href="mailto:founders@velocity.education?subject=Velocity%20pilot%20%E2%80%94%20fast-track"
+                  className="font-medium underline decoration-dotted underline-offset-4 hover:text-white"
+                  style={{ color: "#4CAF50" }}
+                >
+                  Email founders@velocity.education
+                </a>
+              </p>
+            </div>
+
+            <div className="mt-6 flex justify-center">
+              <button
+                onClick={onClose}
+                className="px-5 py-2 rounded-lg text-white text-sm font-medium"
+                style={{ backgroundColor: "#275D38" }}
+              >
+                Close
+              </button>
+            </div>
           </div>
         ) : (
           <form onSubmit={submit} className="p-5 space-y-4">
@@ -232,5 +269,43 @@ function Field({ label, required, children }: { label: string; required?: boolea
       </span>
       {children}
     </label>
+  );
+}
+
+function TimelineStep({
+  step,
+  day,
+  title,
+  body,
+}: {
+  step: number;
+  day: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <li className="relative flex gap-4">
+      <div
+        className="relative z-10 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white border"
+        style={{
+          backgroundColor: "rgba(39, 93, 56, 0.35)",
+          borderColor: "#275D38",
+        }}
+      >
+        {step}
+      </div>
+      <div className="flex-1 pt-0.5">
+        <div className="flex items-baseline gap-2">
+          <span
+            className="text-[11px] font-bold uppercase tracking-wider"
+            style={{ color: "#4CAF50" }}
+          >
+            {day}
+          </span>
+          <span className="text-sm text-white font-semibold">{title}</span>
+        </div>
+        <p className="text-xs text-gray-400 mt-1 leading-relaxed">{body}</p>
+      </div>
+    </li>
   );
 }

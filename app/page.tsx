@@ -294,6 +294,98 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Trust & origin */}
+      <section className="max-w-6xl mx-auto px-6 py-20">
+        <div className="text-center mb-10">
+          <div className="inline-block text-[11px] font-semibold uppercase tracking-[0.25em] text-green-400 mb-3">
+            Why we built this
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-white">Honest about where we are.</h2>
+          <p className="text-gray-400 mt-3 max-w-2xl mx-auto">
+            We&apos;re early. No fabricated logos, no invented case studies. Here&apos;s the real picture.
+          </p>
+        </div>
+
+        {/* Founder quote */}
+        <div
+          className="bg-gray-900 border border-gray-800 rounded-2xl p-8 md:p-12 max-w-3xl mx-auto"
+          style={{ background: "linear-gradient(180deg, rgba(39, 93, 56, 0.08), rgba(17, 24, 39, 1))" }}
+        >
+          <div className="text-5xl leading-none mb-4" style={{ color: "#4CAF50" }} aria-hidden="true">&ldquo;</div>
+          <blockquote className="text-lg md:text-xl text-white leading-relaxed font-medium">
+            We lived this problem as students at UVU. Advising was rationed: a 15-minute slot every few months,
+            generic email blasts, and a degree audit you had to decode yourself. We watched friends drop courses
+            they didn&apos;t need, miss prerequisites, and walk away from degrees they were one semester from
+            finishing. Velocity is the tool we wished we&apos;d had  built so every student gets the kind of
+            advising the loudest students already do.
+          </blockquote>
+          <div className="mt-6 flex items-center gap-3">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center font-black text-white text-sm shrink-0"
+              style={{ backgroundColor: "#275D38" }}
+            >
+              V
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-white">Velocity Founding Team</div>
+              <div className="text-xs text-gray-500">Utah Valley University &middot; 2026</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Trust / compliance badges */}
+        <div className="mt-12">
+          <div className="text-center text-[11px] font-semibold uppercase tracking-[0.25em] text-gray-500 mb-5">
+            Security &amp; data posture
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto">
+            {[
+              { label: "FERPA-compliant", sub: "School-official DPA, day one", icon: "✓" },
+              { label: "SOC 2 Type II", sub: "Audit in progress  2026", icon: "○" },
+              { label: "No LLM training", sub: "Contractual non-training clause", icon: "×" },
+              { label: "US data residency", sub: "US-East AWS by default", icon: "■" },
+            ].map((b) => (
+              <div
+                key={b.label}
+                className="bg-gray-900 border border-gray-800 rounded-xl p-4 flex items-start gap-3"
+              >
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"
+                  style={{ backgroundColor: "rgba(39, 93, 56, 0.18)", color: "#4CAF50" }}
+                  aria-hidden="true"
+                >
+                  {b.icon}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold text-white leading-tight">{b.label}</div>
+                  <div className="text-xs text-gray-500 mt-0.5 leading-snug">{b.sub}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Pilot conversations */}
+        <div className="mt-12 text-center">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.25em] text-gray-500 mb-4">
+            In active pilot conversations with
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm md:text-base text-gray-300 max-w-3xl mx-auto">
+            <span>Regional comprehensive universities</span>
+            <span className="text-gray-700" aria-hidden="true">&middot;</span>
+            <span>Community college systems</span>
+            <span className="text-gray-700" aria-hidden="true">&middot;</span>
+            <span>Workforce-development consortia</span>
+            <span className="text-gray-700" aria-hidden="true">&middot;</span>
+            <span>State higher-ed offices</span>
+          </div>
+          <p className="text-xs text-gray-600 mt-4 max-w-xl mx-auto">
+            We don&apos;t list signed customer logos yet because we don&apos;t have signed contracts to point to.
+            When we do, you&apos;ll see them here  named, with permission.
+          </p>
+        </div>
+      </section>
+
       {/* ROI calculator */}
       <section className="max-w-6xl mx-auto px-6 py-20">
         <div className="text-center mb-10">
@@ -446,6 +538,7 @@ export default function Landing() {
               <div className="text-xs uppercase tracking-wider text-gray-500 mb-3">Resources</div>
               <ul className="space-y-2 text-sm">
                 <li><Link href="/integrations#security" className="text-gray-400 hover:text-white">Security &amp; FERPA</Link></li>
+                <li><Link href="/one-pager" className="text-gray-400 hover:text-white">Download our one-pager &rarr;</Link></li>
                 <li><span className="text-gray-600">Documentation (soon)</span></li>
                 <li><span className="text-gray-600">Case studies (soon)</span></li>
               </ul>

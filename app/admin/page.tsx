@@ -56,7 +56,7 @@ export default function AdminDashboard() {
                   Admin
                 </span>
               </div>
-              <p className="text-xs text-gray-500">Institution analytics &middot; Live demo data</p>
+              <p className="text-xs text-gray-500">Institution analytics &middot; Sample data &middot; FERPA-compliant</p>
             </div>
           </div>
           <div className="flex items-center gap-5">
@@ -96,10 +96,19 @@ export default function AdminDashboard() {
 
         {/* Retention Indicators */}
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-8">
-          <h3 className="text-lg font-semibold text-white mb-4">Retention &amp; Success Indicators</h3>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+            <h3 className="text-lg font-semibold text-white">Retention &amp; Success Indicators</h3>
+            <a
+              href="/demo"
+              className="text-sm font-medium text-green-400 hover:text-green-300 transition-colors flex items-center gap-1"
+            >
+              View at-risk student profiles
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </a>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {analytics.retentionIndicators.map((indicator, i) => (
-              <div key={i} className="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <a key={i} href="/demo" className="block bg-gray-800/50 rounded-lg p-4 border border-gray-700 hover:border-green-700/60 transition-colors group">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-gray-400">{indicator.metric}</span>
                   <span
@@ -115,7 +124,8 @@ export default function AdminDashboard() {
                   </span>
                 </div>
                 <div className="text-2xl font-bold text-white">{indicator.value}</div>
-              </div>
+                <p className="text-xs text-gray-600 group-hover:text-gray-500 mt-2 transition-colors">Click to see student profiles →</p>
+              </a>
             ))}
           </div>
         </div>
@@ -191,8 +201,27 @@ export default function AdminDashboard() {
         </div>
       </main>
 
-      <footer className="border-t border-gray-800 mt-16 py-8 text-center text-gray-500 text-sm">
-        <p>Velocity &middot; Advisor &amp; institution analytics</p>
+      {/* Pilot CTA */}
+      <div className="border-t border-gray-800 mt-16 bg-gray-900/50">
+        <div className="max-w-7xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <p className="text-white font-semibold text-lg">Ready to run this against your real student population?</p>
+            <p className="text-gray-400 text-sm mt-1">Import a Banner CSV and see live analytics in under 10 minutes. No SIS integration required.</p>
+          </div>
+          <div className="flex gap-3 shrink-0">
+            <a href="/admin/import" className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold border border-gray-700 text-gray-200 hover:border-gray-500 transition-colors">
+              Import CSV
+            </a>
+            <a href="/pricing" className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90" style={{ backgroundColor: "#275D38" }}>
+              Request pilot
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <footer className="border-t border-gray-800 py-8 text-center text-gray-500 text-sm">
+        <p>Velocity &middot; Advisor &amp; institution analytics &middot; FERPA-compliant</p>
+        <p className="mt-1 text-gray-600">Demo uses sample student data. No real student records are stored.</p>
       </footer>
     </div>
   );

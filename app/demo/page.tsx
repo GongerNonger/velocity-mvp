@@ -132,7 +132,7 @@ export default function StudentDashboard() {
                   Demo
                 </span>
               </div>
-              <p className="text-xs text-gray-500">AI Academic Advisor &middot; Live with UVU sample data</p>
+              <p className="text-xs text-gray-500">AI Academic Advisor &middot; Sample data &middot; FERPA-compliant</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -243,8 +243,37 @@ export default function StudentDashboard() {
                       <span className="font-semibold text-sm">{alert.type}</span>
                     </div>
                     <p className="text-sm opacity-90">{alert.message}</p>
+                    {alert.severity === "high" && (
+                      <p className="text-xs mt-2 opacity-70 font-medium">
+                        Suggested action: Advisor outreach within 48 hrs &rarr; review course load &rarr; consider tutoring referral.
+                      </p>
+                    )}
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* Institution Impact — shows the before/after cost story when the student is behind */}
+            {recommendation.riskAlerts.some((a) => a.severity === "high") && (
+              <div className="mb-8 rounded-xl border border-amber-800/40 bg-amber-950/20 p-6">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-amber-400 mb-2">Institution Impact — Without Intervention</p>
+                    <p className="text-sm text-gray-300 max-w-2xl">
+                      A student like {selectedStudent.name.split(" ")[0]} who misses their target graduation by even one semester costs the institution an average of{" "}
+                      <span className="text-white font-semibold">$4,200 in extended support</span> and delays a tuition seat opening for the next cohort.
+                      Velocity surfaces this flag <span className="text-amber-300 font-semibold">before it becomes a withdrawal</span> — not after.
+                    </p>
+                  </div>
+                  <a
+                    href="/admin"
+                    className="shrink-0 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90"
+                    style={{ backgroundColor: "#275D38" }}
+                  >
+                    See institution-wide view
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </a>
+                </div>
               </div>
             )}
 
@@ -304,17 +333,17 @@ export default function StudentDashboard() {
                       <p className="text-sm text-gray-300">
                         {recommendation.graduationTimeline.onTrack
                           ? `Great progress, ${selectedStudent.name.split(" ")[0]}! You are on track to graduate by ${recommendation.graduationTimeline.estimatedGraduation}. Keep maintaining your course load of 15 credits per semester.`
-                          : `${selectedStudent.name.split(" ")[0]}, you are currently behind schedule. Consider taking summer courses at UVU or increasing your semester course load to get back on track for your ${selectedStudent.expectedGraduation} target.`}
+                          : `${selectedStudent.name.split(" ")[0]}, you are currently behind schedule. Consider taking summer courses or increasing your semester course load to get back on track for your ${selectedStudent.expectedGraduation} target.`}
                       </p>
                     </div>
                     <div className="rounded-lg p-4 border" style={{ backgroundColor: "rgba(39, 93, 56, 0.1)", borderColor: "rgba(39, 93, 56, 0.3)" }}>
                       <p className="text-sm text-gray-300">
                         With a GPA of {selectedStudent.gpa},{" "}
                         {selectedStudent.gpa >= 3.5
-                          ? "you are in excellent academic standing. Consider applying for UVU Honors or undergraduate research opportunities."
+                          ? "you are in excellent academic standing. Consider applying for Honors or undergraduate research opportunities."
                           : selectedStudent.gpa >= 3.0
-                          ? "you have solid academic standing. Focus on maintaining this while building practical skills through UVU's experiential learning programs."
-                          : "consider utilizing UVU's Student Success Center and tutoring services to strengthen your academic performance."}
+                          ? "you have solid academic standing. Focus on maintaining this while building practical skills through experiential learning programs."
+                          : "consider utilizing the Student Success Center and tutoring services to strengthen your academic performance."}
                       </p>
                     </div>
                   </div>
@@ -324,7 +353,7 @@ export default function StudentDashboard() {
 
             {activeTab === "courses" && (
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-white">Recommended Next Courses at UVU</h3>
+                <h3 className="text-lg font-semibold text-white">Recommended Next Courses</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {recommendation.recommendedCourses.map((rec, i) => (
                     <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-6 hover:border-green-700 transition-colors">
@@ -447,8 +476,12 @@ export default function StudentDashboard() {
       </main>
 
       <footer className="border-t border-gray-800 mt-16 py-8 text-center text-gray-500 text-sm">
-        <p>Velocity &middot; AI Academic Advising</p>
-        <p className="mt-1 text-gray-600">Demo uses public UVU catalog data; sample students are fictional.</p>
+        <p className="text-gray-400 mb-2">
+          Ready to see this with your students?{" "}
+          <a href="/pricing" className="underline text-green-400 hover:text-green-300">Request a pilot &rarr;</a>
+        </p>
+        <p>Velocity &middot; AI Academic Advising &middot; FERPA-compliant</p>
+        <p className="mt-1 text-gray-600">Demo uses a public course catalog; sample student profiles are fictional.</p>
       </footer>
 
       {selectedStudent && <AIChat studentId={selectedStudent.id} studentName={selectedStudent.name} />}

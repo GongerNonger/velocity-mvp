@@ -23,8 +23,9 @@ export function calculateGraduationProgress(student: Student) {
   const creditsPerSemester = 15;
   const estimatedSemesters = Math.ceil(creditsRemaining / creditsPerSemester);
 
-  const currentYear = 2026;
-  const currentSemester = 1; // Spring
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentSemester = now.getMonth() < 6 ? 1 : 2; // 1=Spring, 2=Fall
   let gradYear = currentYear;
   let gradSemester = currentSemester;
   for (let i = 0; i < estimatedSemesters; i++) {
@@ -355,8 +356,9 @@ export function generateFourYearPlan(student: Student): FourYearPlan {
 
   // Past semesters (completed). 4 years = 8 semesters total.
   const enrollment = student.enrollmentYear;
-  const currentYear = 2026;
-  const currentTermIsSpring = true;
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentTermIsSpring = now.getMonth() < 6;
   const totalSemestersUsed = (currentYear - enrollment) * 2 + (currentTermIsSpring ? 1 : 2);
 
   const semesters: SemesterPlan[] = [];
@@ -439,8 +441,18 @@ export function answerStudentQuestion(student: Student, question: string): ChatR
   const q = question.toLowerCase().trim();
   const firstName = student.name.split(" ")[0];
 
+  // Normalise intent — strip filler words so pattern matching is more robust
+  const tokens = q.replace(/[^\w\s]/g, " ").split(/\s+/);
+  const has = (...words: string[]) => words.some((w) => tokens.includes(w) || q.includes(w));
+
   // Course recommendations
-  if (q.match(/what.*(take|register|enroll|sign up|class|course).*(next|semester|spring|fall)/) || q.match(/recommend.*(course|class)/) || q.match(/which.*course/)) {
+  if (
+    has("course", "class", "classes", "courses", "register", "enroll", "sign") ||
+    q.match(/what.*(take|next|semester)/) ||
+    q.match(/recommend.*(course|class)/) ||
+    q.match(/which.*course/) ||
+    q.match(/(next semester|this semester|fall|spring).*(take|register)/)
+  ) {
     const recs = recommendCourses(student);
     const top = recs.slice(0, 3);
     const list = top.map((r, i) => `${i + 1}. **${r.course.code} — ${r.course.name}** (${r.course.credits} cr): ${r.reasoning}`).join("\n");
@@ -453,7 +465,7 @@ export function answerStudentQuestion(student: Student, question: string): ChatR
   }
 
   // Career questions
-  if (q.match(/(career|job|salary|industry|hired|after graduation|what can i do)/)) {
+  if (has("career", "job", "jobs", "salary", "work", "industry", "hire", "hired", "employment", "profession", "occupation") || q.includes("after graduation") || q.includes("what can i do") || q.includes("make money") || q.includes("earn")) {
     const analysis = analyzeCareerPathways(student);
     const top = analysis.matchedPaths[0];
     if (top) {
@@ -462,14 +474,14 @@ export function answerStudentQuestion(student: Student, question: string): ChatR
       return {
         answer: `Your strongest career match right now is **${top.career.title}** at ${top.matchScore}% (avg salary $${top.career.averageSalary.toLocaleString()}, growth ${top.career.growthRate}%/yr).\n\nYou already have: ${matchedSkills}.\n${top.missingSkills.length > 0 ? `Skills to develop: ${missing}.` : "You're well-prepared!"}\n\nWant me to find courses that close those gaps?`,
         suggestions: ["Close the skill gaps", "Show all career matches", "What if I pivot to ML?"],
-        followUpPrompts: ["Compare top 3 careers side by side", "Internships near UVU"],
+        followUpPrompts: ["Compare top 3 careers side by side", "Internships near me"],
         context: { type: "career", data: analysis.matchedPaths.slice(0, 3) },
       };
     }
   }
 
   // Graduation / progress
-  if (q.match(/(graduat|on track|finish|when.*done|timeline|behind|catch up)/)) {
+  if (has("graduate", "graduation", "finish", "done", "behind", "track", "progress", "timeline", "semester", "credits", "remaining", "complete") || q.includes("catch up") || q.includes("on time") || q.includes("when will i")) {
     const progress = calculateGraduationProgress(student);
     return {
       answer: `You're at **${progress.percentComplete}%** of your degree (${progress.creditsCompleted}/${progress.requiredCredits} credits). At 15 credits/semester you'll graduate ${progress.estimatedGraduation} — ${progress.onTrack ? `that's on track with your target of ${student.expectedGraduation}.` : `that's later than your ${student.expectedGraduation} target. Want to look at summer courses to catch up?`}`,
@@ -480,23 +492,34 @@ export function answerStudentQuestion(student: Student, question: string): ChatR
   }
 
   // Skills
-  if (q.match(/(skill|learn|gap|missing|what.*know)/)) {
+  if (has("skill", "skills", "learn", "gap", "gaps", "missing", "need", "lacking", "develop", "build", "improve", "strengthen") || q.includes("what should i know") || q.includes("what do i need")) {
     const analysis = analyzeCareerPathways(student);
     const gaps = analysis.skillGapAnalysis.gaps.slice(0, 5);
     return {
       answer: gaps.length === 0
         ? `Looking great, ${firstName} — no significant skill gaps across your target careers. Strong position.`
-        : `Your top skill gaps for your career goals: **${gaps.join(", ")}**. I can recommend specific UVU courses that teach each of these.`,
+        : `Your top skill gaps for your career goals: **${gaps.join(", ")}**. I can recommend specific courses that teach each of these.`,
       suggestions: ["Courses to close gaps", "Show all my skills", "Add a skill to my profile"],
       followUpPrompts: ["What's the highest-ROI skill to learn next?", "Which internships need these skills?"],
       context: { type: "skills", data: gaps },
     };
   }
 
-  // GPA
-  if (q.match(/(gpa|grade|standing|academic|honor)/)) {
+  // 4-year plan
+  if (has("plan", "planning", "roadmap", "four", "4", "year", "schedule", "map") && (q.includes("plan") || q.includes("roadmap") || q.includes("year"))) {
+    const progress = calculateGraduationProgress(student);
     return {
-      answer: `Your current GPA is **${student.gpa}**. ${student.gpa >= 3.5 ? `Excellent — you qualify for UVU Honors consideration and most competitive grad programs.` : student.gpa >= 3.0 ? `Solid academic standing. Maintain this while building practical experience.` : `Below 3.0 — let's look at lighter course loads, tutoring at UVU's Student Success Center, or retaking key courses.`}`,
+      answer: `Your personalized 4-year plan maps out every semester from now through ${progress.estimatedGraduation}. It's built around your ${student.major} requirements and career goals — prioritizing courses that fill your biggest skill gaps first.\n\nHead to the **4-Year Plan** tab above to see the full Kanban view. Want a quick summary of your remaining semesters instead?`,
+      suggestions: ["Show remaining courses", "How many semesters left?", "Show my career matches"],
+      followUpPrompts: ["Can I graduate in 3 years instead?", "What happens if I change my major?"],
+      context: { type: "progress", data: progress },
+    };
+  }
+
+  // GPA
+  if (has("gpa", "grade", "grades", "standing", "academic", "honor", "honors", "probation", "cumulative") || q.includes("my grades")) {
+    return {
+      answer: `Your current GPA is **${student.gpa}**. ${student.gpa >= 3.5 ? `Excellent — you qualify for Honors consideration and most competitive grad programs.` : student.gpa >= 3.0 ? `Solid academic standing. Maintain this while building practical experience.` : `Below 3.0 — let's look at lighter course loads, tutoring through your Student Success Center, or retaking key courses.`}`,
       suggestions: ["How do I raise my GPA?", "Honors program requirements", "Show grade trend"],
       followUpPrompts: ["What if I retake a course?", "Which classes are 'GPA boosters'?"],
       context: { type: "progress" },
@@ -540,6 +563,12 @@ export function getAdvisorRecommendation(student: Student): AdvisorRecommendatio
 
 export function getInstitutionalAnalytics(): InstitutionalAnalytics {
   const totalStudents = students.length;
+  if (totalStudents === 0) {
+    return {
+      totalStudents: 0, averageGPA: 0, averageProgress: 0, averageCreditsCompleted: 0,
+      retentionIndicators: [], popularCareerPaths: [], commonSkillGaps: [], departmentBreakdown: [],
+    };
+  }
   const averageGPA = Math.round((students.reduce((sum, s) => sum + s.gpa, 0) / totalStudents) * 100) / 100;
   const averageCreditsCompleted = Math.round(students.reduce((sum, s) => sum + s.completedCredits, 0) / totalStudents);
   const averageProgress = Math.round(

@@ -74,6 +74,7 @@ export default function StudentDashboard() {
   const [careerAnalysis, setCareerAnalysis] = useState<CareerAnalysis | null>(null);
   const [activeTab, setActiveTab] = useState<"progress" | "courses" | "career" | "skills">("progress");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/students")
@@ -81,7 +82,9 @@ export default function StudentDashboard() {
       .then((data) => {
         setStudents(data.students);
         if (data.students.length > 0) {
-          loadStudentData(data.students[0].id);
+          const paramId = new URLSearchParams(window.location.search).get("student");
+          const match = paramId && data.students.find((s: Student) => s.id === paramId);
+          loadStudentData(match ? paramId! : data.students[0].id);
         }
         setLoading(false);
       });
@@ -89,29 +92,72 @@ export default function StudentDashboard() {
 
   async function loadStudentData(id: string) {
     setLoading(true);
-    const [studentRes, adviseRes, careerRes] = await Promise.all([
-      fetch(`/api/students/${id}`).then((r) => r.json()),
-      fetch("/api/advise", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId: id }),
-      }).then((r) => r.json()),
-      fetch("/api/career-path", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId: id }),
-      }).then((r) => r.json()),
-    ]);
-    setSelectedStudent(studentRes.student);
-    setRecommendation(adviseRes.recommendation);
-    setCareerAnalysis(careerRes.analysis);
-    setLoading(false);
+    setError(null);
+    try {
+      const [studentRes, adviseRes, careerRes] = await Promise.all([
+        fetch(`/api/students/${id}`).then((r) => r.json()),
+        fetch("/api/advise", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ studentId: id }),
+        }).then((r) => r.json()),
+        fetch("/api/career-path", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ studentId: id }),
+        }).then((r) => r.json()),
+      ]);
+      setSelectedStudent(studentRes.student);
+      setRecommendation(adviseRes.recommendation);
+      setCareerAnalysis(careerRes.analysis);
+    } catch {
+      setError("Could not load student data. The server may have restarted — please refresh.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleSuggestion(text: string) {
+    if (
+      text === "Show me my 4-year plan" ||
+      text === "Help me build a 4-year plan" ||
+      text === "Am I on track to graduate?" ||
+      text === "Show 4-year plan"
+    ) {
+      if (selectedStudent) {
+        window.location.href = `/demo/plan/${selectedStudent.id}`;
+      }
+    } else if (text === "Show my career matches" || text === "Show all career matches") {
+      setActiveTab("career");
+    } else if (
+      text === "What should I take next semester?" ||
+      text === "Show recommended courses"
+    ) {
+      setActiveTab("courses");
+    }
   }
 
   if (loading && !selectedStudent) {
     return (
       <div className="min-h-screen bg-gray-950 flex items-center justify-center">
         <div className="text-green-400 text-xl">Loading Velocity...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="bg-gray-900 border border-red-800 rounded-xl p-8 max-w-md w-full text-center">
+          <p className="text-red-400 text-sm mb-6">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-5 py-2 rounded-lg text-white text-sm font-medium"
+            style={{ backgroundColor: "#275D38" }}
+          >
+            Refresh
+          </button>
+        </div>
       </div>
     );
   }
@@ -484,7 +530,13 @@ export default function StudentDashboard() {
         <p className="mt-1 text-gray-600">Demo uses a public course catalog; sample student profiles are fictional.</p>
       </footer>
 
-      {selectedStudent && <AIChat studentId={selectedStudent.id} studentName={selectedStudent.name} />}
+      {selectedStudent && (
+        <AIChat
+          studentId={selectedStudent.id}
+          studentName={selectedStudent.name}
+          onSuggestion={handleSuggestion}
+        />
+      )}
     </div>
   );
 }

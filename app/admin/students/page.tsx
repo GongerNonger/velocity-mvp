@@ -139,7 +139,7 @@ export default function StudentsListPage() {
           </div>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+        <div className="w-full overflow-x-auto bg-gray-900 border border-gray-800 rounded-xl">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-900/80 border-b border-gray-800 text-left text-xs uppercase tracking-wide text-gray-500">
@@ -173,7 +173,7 @@ export default function StudentsListPage() {
                       className="border-b border-gray-800/70 last:border-0 hover:bg-gray-800/40 transition-colors"
                     >
                       <td className="px-4 py-3">
-                        <a href="/demo" className="text-white font-medium hover:text-green-300">
+                        <a href={`/demo?student=${s.id}`} className="text-white font-medium hover:text-green-300">
                           {s.name}
                         </a>
                         <div className="text-xs text-gray-500">{s.email}</div>
@@ -196,7 +196,7 @@ export default function StudentsListPage() {
                       </td>
                       <td className="px-4 py-3 text-right">
                         <a
-                          href="/demo"
+                          href={`/demo?student=${s.id}`}
                           className="text-xs font-medium text-green-400 hover:text-green-300"
                         >
                           Open &rarr;

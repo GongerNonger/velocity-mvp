@@ -21,7 +21,15 @@ const STARTERS = [
   "What skills should I focus on?",
 ];
 
-export function AIChat({ studentId, studentName }: { studentId: string; studentName: string }) {
+export function AIChat({
+  studentId,
+  studentName,
+  onSuggestion,
+}: {
+  studentId: string;
+  studentName: string;
+  onSuggestion?: (text: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -145,7 +153,7 @@ export function AIChat({ studentId, studentName }: { studentId: string; studentN
                   {m.suggestions.map((s) => (
                     <button
                       key={s}
-                      onClick={() => send(s)}
+                      onClick={() => { onSuggestion?.(s); send(s); }}
                       className="text-xs text-green-300 bg-green-950/40 hover:bg-green-900/40 border border-green-800/50 rounded-full px-3 py-1 transition-colors"
                     >
                       {s}

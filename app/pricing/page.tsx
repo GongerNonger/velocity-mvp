@@ -220,7 +220,12 @@ export default function PricingPage() {
         </section>
       </main>
 
-      <footer className="border-t border-gray-800 py-8 text-center text-gray-500 text-sm">
+      <footer className="border-t border-gray-800 py-8 text-center text-gray-500 text-sm space-y-2">
+        <p>
+          <Link href="/one-pager" className="text-green-400 hover:text-green-300">
+            Download our one-pager &rarr;
+          </Link>
+        </p>
         <p>Velocity &middot; AI Academic Advising &middot; Built in Utah &middot; &copy; 2026</p>
       </footer>
     </div>

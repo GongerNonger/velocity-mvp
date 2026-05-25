@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AIChat } from "../components/AIChat";
 import { AmbientOrbs } from "../components/AmbientOrbs";
 
@@ -18,6 +18,16 @@ interface Student {
   expectedGraduation: string;
   skills: string[];
   careerGoals: string[];
+}
+
+interface CourseItem {
+  id: string;
+  name: string;
+  code: string;
+  credits: number;
+  department: string;
+  skillsTaught: string[];
+  description: string;
 }
 
 interface Course {
@@ -68,15 +78,98 @@ interface CareerAnalysis {
   };
 }
 
+const SKILL_DESCRIPTIONS: Record<string, string> = {
+  "Python": "A general-purpose programming language widely used in data science, AI, web development, and automation. Known for readable syntax and a vast library ecosystem.",
+  "Java": "An object-oriented, platform-independent language used in enterprise software, Android apps, and large-scale systems. Known for strong typing and reliability.",
+  "JavaScript": "The language of the web — runs in every browser and on servers via Node.js. Essential for frontend development and increasingly popular for full-stack work.",
+  "HTML/CSS": "The foundational languages of the web. HTML structures content; CSS styles and lays it out. Required for any web-facing role.",
+  "SQL": "The standard language for querying and managing relational databases. Used in nearly every data, backend, and analytics role.",
+  "Git": "The industry-standard version control system. Every software team uses it to track changes, collaborate, and deploy code.",
+  "React": "A JavaScript library for building user interfaces, maintained by Meta. The most in-demand frontend framework for web applications.",
+  "Linux": "An open-source operating system used by most servers, cloud infrastructure, and developer workstations. Core knowledge for any backend, DevOps, or systems role.",
+  "C++": "A high-performance, systems-level language used in game development, embedded systems, operating systems, and competitive programming.",
+  "Data Structures": "The fundamental building blocks of efficient programs — arrays, linked lists, trees, graphs, hash maps. Core to any CS interview and to writing scalable code.",
+  "Algorithms": "Step-by-step procedures for solving computational problems — sorting, searching, graph traversal, dynamic programming. Central to CS theory and technical interviews.",
+  "Problem Solving": "Structured approaches to breaking down complex problems, designing solutions, and debugging. The meta-skill that makes all other technical skills useful.",
+  "Machine Learning": "A subfield of AI that enables systems to learn from data without explicit programming. Includes supervised, unsupervised, and reinforcement learning methods.",
+  "AI Fundamentals": "Core concepts in artificial intelligence — search algorithms, knowledge representation, planning, and the basics of machine learning.",
+  "Neural Networks": "Computational models loosely inspired by the brain. The backbone of modern deep learning and the foundation of large language models.",
+  "Agile": "An iterative software development framework that delivers working software in short cycles (sprints). Used by the vast majority of tech companies.",
+  "System Design": "The discipline of designing large-scale distributed systems — databases, APIs, caching, load balancing. Critical for senior engineering roles.",
+  "Testing": "Writing automated tests (unit, integration, end-to-end) to verify software correctness and prevent regressions. Required in any production engineering environment.",
+  "Design Patterns": "Reusable solutions to commonly recurring software design problems (e.g. Factory, Observer, Singleton). Make code more maintainable and extensible.",
+  "Database Design": "Modeling data relationships, choosing between relational and NoSQL databases, normalization, and indexing for performance.",
+  "NoSQL": "Non-relational databases (MongoDB, DynamoDB, Redis) that offer flexibility and scale for specific use cases like document storage or key-value caching.",
+  "Data Modeling": "The process of defining how data is structured, related, and stored — the blueprint for any database schema or API.",
+  "Systems Programming": "Writing software that interacts directly with hardware or the OS — memory management, concurrency, device drivers. Used in embedded systems and OS development.",
+  "Concurrency": "Managing multiple computations happening simultaneously — threads, locks, async/await, and the patterns for avoiding race conditions.",
+  "Memory Management": "Understanding how programs allocate and free memory. Critical in C/C++ and for understanding performance characteristics of any language.",
+  "Networking": "How computers communicate — IP addressing, TCP/UDP, DNS, HTTP, and the protocols that underpin the internet and every networked application.",
+  "TCP/IP": "The foundational protocol suite of the internet. Understanding it is required for network engineering, backend development, and security roles.",
+  "Network Security": "Techniques for protecting networked systems from unauthorized access, attacks, and data breaches — firewalls, VPNs, TLS, intrusion detection.",
+  "AWS": "Amazon Web Services — the leading cloud platform. Proficiency in AWS (EC2, S3, Lambda, RDS) is one of the most in-demand infrastructure skills.",
+  "Cloud Architecture": "Designing systems that run on cloud infrastructure — scalability, availability, cost optimization, and cloud-native patterns like microservices and serverless.",
+  "DevOps": "The practice of combining software development and IT operations to shorten delivery cycles — CI/CD pipelines, infrastructure as code, monitoring.",
+  "Docker": "A platform for packaging and running applications in containers, ensuring consistency across development, staging, and production environments.",
+  "Kubernetes": "An open-source system for automating deployment, scaling, and management of containerized applications. The standard for container orchestration at scale.",
+  "Linux Administration": "Managing Linux servers — user management, file permissions, process control, package management, and service configuration.",
+  "Windows Server": "Administering Microsoft Windows Server environments — Active Directory, Group Policy, IIS, and enterprise IT infrastructure.",
+  "Shell Scripting": "Writing Bash or PowerShell scripts to automate repetitive system administration tasks, deployments, and data processing pipelines.",
+  "Automation": "Using scripts, tools (Ansible, Terraform), and APIs to eliminate manual repetitive tasks in infrastructure, testing, and deployment.",
+  "Cisco": "Networking equipment and certifications (CCNA, CCNP) from the dominant enterprise networking vendor. Core for network engineering careers.",
+  "Cybersecurity Basics": "Foundational security concepts — CIA triad, threat modeling, common attack types (phishing, SQL injection, XSS), and defense principles.",
+  "Cybersecurity": "Protecting computer systems and networks from digital attacks. Encompasses network security, application security, identity management, and incident response.",
+  "Risk Assessment": "Identifying, analyzing, and prioritizing security and business risks. Core to GRC (governance, risk, compliance) and security architecture roles.",
+  "Wireshark": "A network protocol analyzer used to capture and inspect network traffic. Standard tool for network troubleshooting, security analysis, and forensics.",
+  "Firewalls": "Hardware or software systems that monitor and control network traffic based on security rules. Foundational component of any network security architecture.",
+  "Penetration Testing": "Authorized simulated attacks on systems to find vulnerabilities before malicious actors do. The core skill of offensive security / ethical hacking.",
+  "Digital Forensics": "Collecting, preserving, and analyzing digital evidence from computers and networks — used in incident response and legal investigations.",
+  "Excel": "Microsoft Excel proficiency — formulas, pivot tables, data analysis, and financial modeling. Expected in every business, finance, and operations role.",
+  "Financial Analysis": "Interpreting financial statements, ratios, and cash flows to evaluate business health and make investment or operational decisions.",
+  "Leadership": "The ability to guide teams, make decisions, resolve conflicts, and drive outcomes. Required for management tracks in every industry.",
+  "Public Speaking": "Communicating clearly and persuasively in front of an audience — presentations, pitches, meetings. Highly valued in client-facing and leadership roles.",
+  "Business Writing": "Writing clear, professional business documents — emails, reports, proposals, memos. Expected in any corporate environment.",
+  "Project Management": "Planning, executing, and closing projects on time and budget. Includes Agile, Scrum, Kanban, and traditional waterfall methodologies.",
+  "Social Media Marketing": "Using platforms (Instagram, LinkedIn, TikTok, X) to build brand awareness, grow audiences, and drive conversions.",
+  "Content Strategy": "Planning, creating, and distributing content to attract and retain a target audience. Core to inbound marketing and brand-building.",
+  "Google Analytics": "Web analytics platform used to track website traffic, user behavior, and campaign performance. Required for any digital marketing role.",
+  "SEO": "Search Engine Optimization — techniques to improve a website's visibility in organic search results. Combines technical, content, and link-building skills.",
+  "Copywriting": "Writing persuasive text for ads, emails, landing pages, and product descriptions. One of the highest-leverage marketing skills.",
+  "Brand Strategy": "Defining a brand's positioning, voice, values, and visual identity to differentiate it in the market.",
+  "Communication": "Expressing ideas clearly in writing and speech, listening actively, and adapting style to the audience. The top soft skill across every profession.",
+  "Critical Thinking": "Analyzing information objectively, evaluating arguments, and making reasoned decisions. Valued in every role that involves non-routine problem solving.",
+  "Statistics": "Collecting, analyzing, and interpreting data. Foundational for data science, research, business analytics, and any evidence-based decision making.",
+  "Linear Algebra": "The mathematics of vectors, matrices, and linear transformations. Essential for machine learning, computer graphics, and data science.",
+  "IT Project Management": "Managing technology projects including software deployments, infrastructure upgrades, and system migrations — often using ITIL or PMI frameworks.",
+  "Patient Care": "Providing direct medical or nursing care to patients — assessment, procedures, monitoring, and compassionate communication.",
+  "Anatomy": "The study of the structure of the human body — essential foundation for all clinical healthcare roles.",
+  "Pharmacology": "The science of drugs — how they work, their effects, dosages, and interactions. Required for nursing, pharmacy, and medical roles.",
+  "Clinical Skills": "Hands-on healthcare competencies — taking vitals, administering medications, wound care, and clinical assessment.",
+  "SEO Basics": "Foundational knowledge of how search engines rank content and the techniques to optimize for better visibility.",
+  "Data Analysis": "Examining, cleaning, transforming, and modeling data to discover useful information and support decision-making.",
+  "Canva": "A graphic design tool widely used for creating marketing materials, social posts, presentations, and visual content without deep design expertise.",
+  "Routing": "Configuring network routers to direct traffic between networks — core networking and Cisco certification skill.",
+  "Switching": "Managing network switches to control traffic within a local area network (LAN) — foundational for network engineering.",
+  "Network Design": "Planning and architecting network infrastructure for performance, reliability, and security.",
+  "Node.js": "A JavaScript runtime for building server-side and API applications. Lets developers use JavaScript across the full stack.",
+  "Bilingual (Spanish/English)": "Fluency in both Spanish and English — a significant professional asset in customer-facing, healthcare, education, and social service roles.",
+  "Customer Service": "Skills for supporting customers — active listening, problem resolution, empathy, and communication across phone, email, and chat.",
+  "Accounting": "Recording, classifying, and summarizing financial transactions. Foundation for finance, audit, tax, and business operations careers.",
+  "Security Architecture": "Designing the security infrastructure of an organization — access controls, encryption, network segmentation, and zero-trust principles.",
+};
+
 export default function StudentDashboard() {
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
   const [careerAnalysis, setCareerAnalysis] = useState<CareerAnalysis | null>(null);
+  const [allCourses, setAllCourses] = useState<CourseItem[]>([]);
+  const [openSkill, setOpenSkill] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"progress" | "courses" | "career" | "skills">("progress");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [role, setRole] = useState<"student" | "counselor" | "demo">("demo");
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -93,7 +186,29 @@ export default function StudentDashboard() {
         }
         setLoading(false);
       });
+    fetch("/api/courses")
+      .then((r) => r.json())
+      .then((data) => setAllCourses(data.courses || []))
+      .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!openSkill) return;
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpenSkill(null);
+    }
+    function handleClick(e: MouseEvent) {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        setOpenSkill(null);
+      }
+    }
+    document.addEventListener("keydown", handleKey);
+    document.addEventListener("mousedown", handleClick);
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, [openSkill]);
 
   async function loadStudentData(id: string) {
     setLoading(true);
@@ -504,19 +619,19 @@ export default function StudentDashboard() {
                           <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Skills You Have</p>
                           <div className="flex flex-wrap gap-1.5">
                             {match.matchedSkills.map((skill) => (
-                              <span key={skill} className="text-xs bg-green-950/50 text-green-300 border border-green-800/50 px-2 py-0.5 rounded">
+                              <button key={skill} onClick={() => setOpenSkill(skill)} className="text-xs bg-green-950/50 text-green-300 border border-green-800/50 px-2 py-0.5 rounded hover:bg-green-900/60 hover:border-green-600 transition-colors cursor-pointer">
                                 {skill}
-                              </span>
+                              </button>
                             ))}
                           </div>
                         </div>
                         <div>
-                          <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Skills to Develop</p>
+                          <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Skills to Develop <span className="text-gray-600 normal-case font-normal">(click any)</span></p>
                           <div className="flex flex-wrap gap-1.5">
                             {match.missingSkills.map((skill) => (
-                              <span key={skill} className="text-xs bg-red-950/50 text-red-300 border border-red-800/50 px-2 py-0.5 rounded">
+                              <button key={skill} onClick={() => setOpenSkill(skill)} className="text-xs bg-red-950/50 text-red-300 border border-red-800/50 px-2 py-0.5 rounded hover:bg-red-900/60 hover:border-red-600 transition-colors cursor-pointer">
                                 {skill}
-                              </span>
+                              </button>
                             ))}
                           </div>
                         </div>
@@ -530,23 +645,25 @@ export default function StudentDashboard() {
             {activeTab === "skills" && careerAnalysis && selectedStudent && (
               <div className="animate-fade-in-up-delay-2 space-y-6">
                 <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Current Skills</h3>
+                  <h3 className="text-lg font-semibold text-white mb-1">Current Skills</h3>
+                  <p className="text-xs text-gray-500 mb-4">Click any skill to see what it is and which courses build it.</p>
                   <div className="flex flex-wrap gap-2">
                     {selectedStudent.skills.map((skill) => (
-                      <span key={skill} className="px-3 py-1.5 rounded-lg text-sm font-medium" style={{ backgroundColor: "rgba(39, 93, 56, 0.2)", color: "#81C784", border: "1px solid rgba(39, 93, 56, 0.4)" }}>
+                      <button key={skill} onClick={() => setOpenSkill(skill)} className="px-3 py-1.5 rounded-lg text-sm font-medium transition-all hover:scale-105 hover:shadow-md hover:shadow-green-900/30 cursor-pointer" style={{ backgroundColor: "rgba(39, 93, 56, 0.2)", color: "#81C784", border: "1px solid rgba(39, 93, 56, 0.4)" }}>
                         {skill}
-                      </span>
+                      </button>
                     ))}
                   </div>
                 </div>
 
                 <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Skill Gaps for Career Goals</h3>
+                  <h3 className="text-lg font-semibold text-white mb-1">Skill Gaps for Career Goals</h3>
+                  <p className="text-xs text-gray-500 mb-4">Click any gap to see what it is and which courses help you build it.</p>
                   <div className="flex flex-wrap gap-2">
                     {careerAnalysis.skillGapAnalysis.gaps.map((skill) => (
-                      <span key={skill} className="bg-amber-950/50 text-amber-300 border border-amber-800/50 px-3 py-1.5 rounded-lg text-sm font-medium">
+                      <button key={skill} onClick={() => setOpenSkill(skill)} className="bg-amber-950/50 text-amber-300 border border-amber-800/50 px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-amber-900/60 hover:border-amber-600 transition-all hover:scale-105 cursor-pointer">
                         {skill}
-                      </span>
+                      </button>
                     ))}
                   </div>
                   {careerAnalysis.skillGapAnalysis.gaps.length === 0 && (
@@ -586,6 +703,107 @@ export default function StudentDashboard() {
           onSuggestion={handleSuggestion}
         />
       )}
+
+      {/* Skill detail panel */}
+      {openSkill && (() => {
+        const relatedCourses = allCourses.filter((c) =>
+          c.skillsTaught.some((s) => s.toLowerCase() === openSkill.toLowerCase())
+        );
+        const description = SKILL_DESCRIPTIONS[openSkill];
+        return (
+          <>
+            <div className="fixed inset-0 bg-black/50 z-40" aria-hidden="true" />
+            <div
+              ref={panelRef}
+              role="dialog"
+              aria-label={`Skill detail: ${openSkill}`}
+              className="fixed right-0 top-0 h-full w-full max-w-md z-50 flex flex-col bg-gray-950 border-l border-gray-800 shadow-2xl animate-fade-in-up"
+              style={{ animationDuration: "200ms" }}
+            >
+              {/* Panel header */}
+              <div className="flex items-center justify-between px-6 py-5 border-b border-gray-800">
+                <div>
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.2em] mb-1" style={{ color: "#4CAF50" }}>
+                    Skill detail
+                  </div>
+                  <h2 className="text-xl font-bold text-white">{openSkill}</h2>
+                </div>
+                <button
+                  onClick={() => setOpenSkill(null)}
+                  aria-label="Close"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors text-lg"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+                {/* Description */}
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">What is this?</h3>
+                  {description ? (
+                    <p className="text-sm text-gray-300 leading-relaxed">{description}</p>
+                  ) : (
+                    <p className="text-sm text-gray-500 italic">No description available for this skill yet.</p>
+                  )}
+                </div>
+
+                {/* Related courses */}
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-3">
+                    Courses that build this skill
+                    {relatedCourses.length > 0 && (
+                      <span className="ml-2 text-gray-600 normal-case font-normal">({relatedCourses.length} found)</span>
+                    )}
+                  </h3>
+                  {relatedCourses.length > 0 ? (
+                    <div className="space-y-3">
+                      {relatedCourses.map((course) => (
+                        <div
+                          key={course.id}
+                          className="bg-gray-900 border border-gray-700/60 rounded-xl p-4 hover:border-green-700/50 transition-colors"
+                        >
+                          <div className="flex items-start justify-between gap-3 mb-1">
+                            <span className="text-sm font-semibold text-white leading-snug">{course.name}</span>
+                            <span className="text-xs text-gray-500 shrink-0 tabular-nums">{course.credits} cr</span>
+                          </div>
+                          <div className="text-xs text-gray-500 mb-2">{course.code} &middot; {course.department}</div>
+                          <p className="text-xs text-gray-400 leading-relaxed">{course.description}</p>
+                          <div className="flex flex-wrap gap-1 mt-3">
+                            {course.skillsTaught.map((s) => (
+                              <button
+                                key={s}
+                                onClick={() => setOpenSkill(s)}
+                                className={`text-xs px-2 py-0.5 rounded border transition-colors ${
+                                  s.toLowerCase() === openSkill.toLowerCase()
+                                    ? "bg-green-900/50 text-green-300 border-green-700/60"
+                                    : "bg-gray-800 text-gray-400 border-gray-700 hover:border-gray-500 hover:text-gray-300"
+                                }`}
+                              >
+                                {s}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 text-sm text-gray-500">
+                      No courses in the current catalog directly teach this skill. It may be developed through project work, internships, or electives not yet in the catalog.
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-gray-800">
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  Courses shown are from the loaded sample catalog. Your institution may offer additional courses that develop this skill.
+                </p>
+              </div>
+            </div>
+          </>
+        );
+      })()}
     </div>
   );
 }
